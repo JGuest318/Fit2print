@@ -96,12 +96,13 @@ export default function About() {
             when everything else is stripped away.
           </p>
           <p>
-            Photography Fit 2 Print isn&rsquo;t a name I chose because it sounded clever. It&rsquo;s
-            a declaration. You see it&rsquo;s a play on the New York Times motto, &ldquo;All the
-            News That&rsquo;s Fit to Print&rdquo; is the famous motto of The New York Times,
-            created by owner Adolph Ochs in 1896, standing for honesty, fairness, and truth in
-            reporting. That rich history stuck with me. My Dad was an avid reader and the Times
-            was his favorite.
+            The phrase &ldquo;Fit 2 Print&rdquo; stayed with me long before I ever owned a
+            camera. My father was an avid reader, and The New York Times was always nearby. Its
+            motto&mdash;&ldquo;All the News That&rsquo;s Fit to Print&rdquo;&mdash;stood for
+            integrity, fairness, and truth. Years later, when it came time to name my business, I
+            realized those words had taken on a new meaning for me. I wasn&rsquo;t thinking about
+            newspapers anymore. I was thinking about photographs that had earned the right to
+            become lasting pieces of a family&rsquo;s history.
           </p>
           <p>
             Not every photograph deserves to become a print. A photograph earns that privilege
