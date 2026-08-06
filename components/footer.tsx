@@ -19,6 +19,7 @@ export function Footer() {
             <Link href="/services">Services &amp; Pricing</Link>
             <Link href="/prints">Print Shop</Link>
             <Link href="/about">About</Link>
+            <Link href="/blog">Behind The Print</Link>
           </div>
         </div>
         <div>
@@ -45,7 +46,7 @@ export function Footer() {
         </div>
       </div>
       <div className="mx-auto mt-12 max-w-7xl border-t border-white/10 pt-6 text-xs">
-        © {new Date().getFullYear()} {SITE.name}. All rights reserved.
+        &copy; {new Date().getFullYear()} {SITE.name}. All rights reserved.
       </div>
     </footer>
   );

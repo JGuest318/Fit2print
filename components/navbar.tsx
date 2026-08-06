@@ -11,6 +11,7 @@ const links = [
   { href: "/services", label: "Services" },
   { href: "/prints", label: "Print Shop" },
   { href: "/about", label: "About" },
+  { href: "/blog", label: "Behind The Print" },
   { href: "/contact", label: "Contact" },
 ];
 
