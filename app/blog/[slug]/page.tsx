@@ -37,6 +37,32 @@ function formatDate(iso: string) {
   });
 }
 
+/**
+ * Post `content` paragraphs support two lightweight editorial markers:
+ *  - "## Heading text"  -> rendered as a gold, display-font subhead with a rule above it
+ *  - "> Emphasis text"  -> rendered as a centered, gold pull-quote for a dramatic beat
+ * Everything else renders as a normal body paragraph.
+ */
+function renderParagraph(paragraph: string, key: number) {
+  if (paragraph.startsWith("## ")) {
+    return (
+      <h2 key={key} className="blog-subhead">
+        {paragraph.slice(3)}
+      </h2>
+    );
+  }
+
+  if (paragraph.startsWith("> ")) {
+    return (
+      <p key={key} className="blog-pull">
+        {paragraph.slice(2)}
+      </p>
+    );
+  }
+
+  return <p key={key}>{paragraph}</p>;
+}
+
 export default async function BlogPost({
   params,
 }: {
@@ -61,9 +87,7 @@ export default async function BlogPost({
         <h1 className="hero-heading mb-10 text-4xl text-white md:text-5xl">{post.title}</h1>
 
         <div className="space-y-6 text-base leading-relaxed text-white/70 md:text-lg">
-          {post.content.map((paragraph, i) => (
-            <p key={i}>{paragraph}</p>
-          ))}
+          {post.content.map((paragraph, i) => renderParagraph(paragraph, i))}
         </div>
       </div>
 
