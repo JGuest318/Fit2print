@@ -69,3 +69,39 @@ body {
     transform: translateY(0);
   }
 }
+
+/* Editorial subheads inside long-form blog posts */
+.blog-subhead {
+  position: relative;
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  line-height: 1.15;
+  color: var(--accent);
+  font-size: clamp(1.35rem, 2.6vw, 2rem);
+}
+
+.blog-subhead::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3rem;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* Editorial pull-quote / dramatic beat inside long-form blog posts */
+.blog-pull {
+  margin: 3rem auto;
+  max-width: 34rem;
+  text-align: center;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  color: var(--accent);
+  font-size: clamp(1.4rem, 3.2vw, 2.1rem);
+}
