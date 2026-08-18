@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { BLOG_POSTS } from "@/lib/blog-posts";
@@ -17,14 +18,20 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = BLOG_POSTS.find((p) => p.slug === slug);
   if (!post) return {};
+
+  const title = post.seoTitle ?? `${post.title} | Behind The Print`;
+  const description = post.metaDescription ?? post.excerpt;
+
   return {
-    title: `${post.title} | Behind The Print`,
-    description: post.excerpt,
+    title,
+    description,
     alternates: { canonical: `/blog/${post.slug}` },
+    keywords: post.tags,
     openGraph: {
-      title: `${post.title} | Behind The Print`,
-      description: post.excerpt,
+      title,
+      description,
       url: `/blog/${post.slug}`,
+      images: post.image ? [{ url: post.image, alt: post.imageAlt ?? post.title }] : undefined,
     },
   };
 }
@@ -86,9 +93,39 @@ export default async function BlogPost({
         <p className="section-label mb-4">{formatDate(post.date)}</p>
         <h1 className="hero-heading mb-10 text-4xl text-white md:text-5xl">{post.title}</h1>
 
+        {post.image && (
+          <figure className="mb-10">
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg md:aspect-[16/10]">
+              <Image
+                src={post.image}
+                alt={post.imageAlt ?? post.title}
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+            {post.imageCaption && (
+              <figcaption className="mt-3 text-sm text-white/50">{post.imageCaption}</figcaption>
+            )}
+          </figure>
+        )}
+
         <div className="space-y-6 text-base leading-relaxed text-white/70 md:text-lg">
           {post.content.map((paragraph, i) => renderParagraph(paragraph, i))}
         </div>
+
+        {post.tags && (
+          <div className="mt-12 flex flex-wrap gap-2 border-t border-white/10 pt-8">
+            {post.tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full border border-white/15 px-3 py-1 text-xs uppercase tracking-wide text-white/50"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       <FinalCta />
