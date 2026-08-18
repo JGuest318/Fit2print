@@ -6,6 +6,15 @@ export interface BlogPost {
   date: string;
   /** Each entry is one paragraph. Prefix with "## " for a subhead, "> " for a pull-quote. */
   content: string[];
+  /** Optional hero photo for posts that ship with a specific image (use as-is, unaltered). */
+  image?: string;
+  imageAlt?: string;
+  imageCaption?: string;
+  /** Optional SEO overrides — falls back to `title` / `excerpt` when omitted. */
+  seoTitle?: string;
+  metaDescription?: string;
+  /** Optional topic tags for the post. */
+  tags?: string[];
 }
 
 /**
@@ -16,6 +25,84 @@ export interface BlogPost {
  * words separated by hyphens, no spaces or punctuation.
  */
 export const BLOG_POSTS: BlogPost[] = [
+  {
+    slug: "hey-what-are-you-looking-at",
+    title: "Hey, What Are You Looking At?",
+    excerpt:
+      "We photographers can spend an extraordinary amount of time staring at photographs in ways nobody else ever will. This image from Miller Park Zoo reminded me that eventually you have to stop interrogating the pixels, back away from the screen and look at the photograph.",
+    date: "2026-08-18",
+    seoTitle: "Stop Pixel Peeping and Look at the Photograph | Photography Fit 2 Print",
+    metaDescription:
+      "An older photograph, an Olympus digital camera and one very patient tortoise offer a reminder that photography should be judged as a complete image, not merely at 300 percent on a monitor.",
+    tags: [
+      "Photography",
+      "Printing",
+      "Pixel Peeping",
+      "Photography Craft",
+      "Olympus",
+      "Miller Park Zoo",
+      "Fine Art Printing",
+      "Digital Photography",
+    ],
+    image: "https://g.tlcdn.com/view/503f9f79e44945988013c6a38b03cf23.jpg",
+    imageAlt:
+      "Close low-angle photograph of a large tortoise at Miller Park Zoo beneath a deep blue sky, photographed by John Guest on August 2, 2020.",
+    imageCaption: "Miller Park Zoo, August 2, 2020. Photographed with my trusted Olympus digital camera.",
+    content: [
+      "Hey, what are you looking at?",
+      "You know no one really looks at pictures that way.",
+      "Back up.",
+      "Seriously. Back up from the screen.",
+      "Nobody walks into somebody's house, sees a photograph hanging on the wall, gets six inches from the glass and starts examining the upper-left corner looking for noise.",
+      "\"Well, John, at 300 percent I'm noticing a little softness around the tortoise's left eyelid.\"",
+      "Man, get away from my picture.",
+      "I took this photograph on August 2, 2020, at Miller Park Zoo with my trusted Olympus digital camera. At the time, I used the technology available to me and worked the image the best way I knew how.",
+      "Technology has moved a long way since then. Cameras have changed. Software has changed. Noise reduction has changed. Sharpening has changed. AI has entered the room and apparently brought luggage.",
+      "And somewhere along the way, photographers became extraordinarily talented at finding things wrong with photographs that almost nobody else would ever notice.",
+      "We call it pixel peeping.",
+      "There is a place for technical inspection. I believe deeply in craftsmanship. I care about resolution, sharpening, color, tonal relationships, file integrity and whether a photograph is properly prepared for its final destination.",
+      "> Eventually you have to stop interrogating the pixels and look at the picture.",
+      "Look at this guy.",
+      "He was standing there looking like he had already survived several major geological events, completely unconcerned with my camera choice, dynamic range or whatever version of Photoshop I happened to be using.",
+      "I was fortunate enough to be standing in front of him with a camera.",
+      "That is where the photograph begins.",
+      "The technology available to me in 2020 helped me create it. The technology available today might help me prepare it differently. Modern noise reduction may uncover detail more gracefully. Better enlargement methods may allow me to make a larger print. My own understanding of color, editing and printing has grown too.",
+      "That is all useful.",
+      "Use the tools.",
+      "But don't let the tools convince you that the photograph didn't exist until the software approved it.",
+      "That is where this starts drifting into familiar Photography Fit 2 Print territory.",
+      "A photograph has another life waiting beyond the monitor.",
+      "Print it.",
+      "When a photograph becomes a physical object, the whole conversation changes. You are no longer staring at individual pixels. You are looking at texture, color, scale and light interacting with paper. You are standing at a normal viewing distance and experiencing the photograph as a complete image.",
+      "Nobody pinches and zooms a print hanging on the wall.",
+      "You approach it. You back away. Something catches your attention and pulls you closer. Maybe you notice the texture in the shell. Maybe it is the dirt beneath those massive feet. Maybe it is that rich blue sky sitting behind an animal that looks like he has absolutely nowhere he needs to be for the next hundred years.",
+      "That relationship is different from anything happening on a phone.",
+      "Older digital photographs can surprise you when you return to them. A file you dismissed years ago may have more life in it than you realized.",
+      "> The photograph did not change.",
+      "> You did.",
+      "Your eye changed. Your editing changed. Your understanding of printing changed. The tools improved. Perhaps most importantly, you became better at understanding what the photograph actually needed.",
+      "That does not mean every old image should be pushed through enough technology to make it look like it was photographed yesterday.",
+      "Sometimes the job is simply to uncover what was already there.",
+      "That distinction matters to me.",
+      "Modern computational tools can reduce noise, refine detail, improve tonal relationships, prepare resolution for output and help us make better decisions about sharpening. Those tools can serve the photograph without becoming the photograph.",
+      "Photography has always depended on technology. Film chemistry was technology. Darkroom dodging and burning were technology. Autofocus is technology. Digital sensors are technology. Lightroom is technology.",
+      "The meaningful question is not whether technology touched the photograph.",
+      "It is what we asked the technology to do.",
+      "And eventually I want to stop talking about megapixels altogether.",
+      "I want to know what happens when this tortoise gets off my monitor and onto a beautiful piece of paper.",
+      "I want to see whether the detail in that shell becomes something you want to approach. I want to see those browns and oranges sitting against that blue sky without a backlit screen helping them along. I want to know whether the photograph can hold its own as an object.",
+      "Can it make someone stop?",
+      "Can it make someone smile?",
+      "Can it return me to Miller Park Zoo on an August day in 2020 with an Olympus camera in my hands and enough curiosity to make the photograph?",
+      "That is the test that interests me.",
+      "Pixel peep when you need to. Inspect your files. Respect the craft. Use every good tool available to you.",
+      "Then back up.",
+      "Look at the photograph.",
+      "And when the photograph is ready, finish the work.",
+      "Have a photograph sitting on a hard drive that deserves another look? Photography Fit 2 Print can help you take it from digital file to finished photographic artwork.",
+      "> We are Fit 2 Capture. We are Fit 2 Curate. We are Fit 2 Print.",
+    ],
+  },
   {
     slug: "hey-ai-you-alright",
     title: "Hey AI You Alright?",
@@ -285,17 +372,17 @@ export const BLOG_POSTS: BlogPost[] = [
       "No photographer presses the shutter with the certainty that this will be the image future generations refuse to let fade.",
       "History never identifies its favorites in advance.",
       "The photograph destined to outlive us rarely announces its importance the day it is created.",
-      "More often, it slips quietly into existence unnoticed. It is the unguarded laughter around the dinner table, a father’s weathered hands resting on a child’s shoulder, a mother’s comforting embrace, the gap-toothed grin that disappears before anyone realizes how fleeting it was, or two grandparents sharing an ordinary afternoon that seemed too commonplace to matter.",
+      "More often, it slips quietly into existence unnoticed. It is the unguarded laughter around the dinner table, a father's weathered hands resting on a child's shoulder, a mother's comforting embrace, the gap-toothed grin that disappears before anyone realizes how fleeting it was, or two grandparents sharing an ordinary afternoon that seemed too commonplace to matter.",
       "Yet time possesses an extraordinary gift.",
       "It elevates the familiar into something irreplaceable.",
-      "The image overlooked today may become the one your children safeguard with quiet devotion. The framed portrait you pass without a second glance may someday inspire your grandchildren to ask, “Who were they?” A weathered album tucked away on a bookshelf may eventually become the final refuge for a smile, an expression, or a face that no longer exists anywhere else.",
+      "The image overlooked today may become the one your children safeguard with quiet devotion. The framed portrait you pass without a second glance may someday inspire your grandchildren to ask, \"Who were they?\" A weathered album tucked away on a bookshelf may eventually become the final refuge for a smile, an expression, or a face that no longer exists anywhere else.",
       "None of us can foresee which frame will carry that burden.",
       "That uncertainty is precisely why every photograph deserves unwavering intention.",
       "Every exposure deserves patience.",
       "Every finished image deserves craftsmanship worthy of its unknown future.",
-      "Not because each photograph belongs beneath gallery lights, but because any single frame may one day shoulder the weight of a family’s story. Long after names have faded from memory, photographs often become the bridge that reconnects generations separated by decades.",
+      "Not because each photograph belongs beneath gallery lights, but because any single frame may one day shoulder the weight of a family's story. Long after names have faded from memory, photographs often become the bridge that reconnects generations separated by decades.",
       "As photographers, we are never granted the luxury of deciding which images will matter half a century from now. That judgment belongs to time alone. Our calling is far simpler—and far more demanding.",
-      "We create every photograph as though it could become someone’s most treasured possession.",
+      "We create every photograph as though it could become someone's most treasured possession.",
       "That conviction is the heartbeat of Photography Fit 2 Print.",
       "It is more than a business name. It is a promise. A promise that every photograph leaving the studio has been crafted with the respect future memories deserve. Images intended not merely to exist on a screen, but to live on walls, rest in albums, pass through careful hands, and be rediscovered by people we will never meet.",
       "Because heirlooms are not born the moment the shutter closes.",
