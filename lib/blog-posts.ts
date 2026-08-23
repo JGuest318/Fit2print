@@ -1,3 +1,15 @@
+export interface BlogImage {
+  type: "image";
+  src: string;
+  alt: string;
+  caption?: string;
+  credit?: string;
+  width: number;
+  height: number;
+}
+
+export type BlogContent = string | BlogImage;
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -5,11 +17,14 @@ export interface BlogPost {
   /** ISO date string, e.g. "2026-08-06" */
   date: string;
   /** Each entry is one paragraph. Prefix with "## " for a subhead, "> " for a pull-quote. */
-  content: string[];
+  content: BlogContent[];
   /** Optional hero photo for posts that ship with a specific image (use as-is, unaltered). */
   image?: string;
   imageAlt?: string;
   imageCaption?: string;
+  imageCredit?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   /** Optional SEO overrides — falls back to `title` / `excerpt` when omitted. */
   seoTitle?: string;
   metaDescription?: string;
@@ -25,6 +40,141 @@ export interface BlogPost {
  * words separated by hyphens, no spaces or punctuation.
  */
 export const BLOG_POSTS: BlogPost[] = [
+  {
+    slug: "the-market",
+    title: "The Market",
+    excerpt:
+      "A photograph returned as a hug, a song broke something open, and a chance meeting between two artists completed the day.",
+    date: "2026-08-23",
+    seoTitle: "The Market: Photography, Sobriety and Human Connection",
+    metaDescription:
+      "At Bloomington’s Farmers Market, a returned portrait became a hug, music opened old wounds, and meeting another artist brought the day full circle.",
+    tags: [
+      "Behind The Print",
+      "Intentional Photography",
+      "Human Connection",
+      "Sobriety",
+      "Printed Photographs",
+    ],
+    image: "/photos/the-market-janie-goat.jpeg",
+    imageAlt:
+      "Janie Paslaski smiles while holding a small white goat at the Downtown Bloomington Farmers Market.",
+    imageCaption: "Janie Paslaski of Middle Creek Farms holding a small white goat.",
+    imageCredit: "Photograph by John Guest, Photography Fit 2 Print.",
+    imageWidth: 1088,
+    imageHeight: 725,
+    content: [
+      "Something felt different about my experience at the Downtown Bloomington Farmers Market yesterday morning.",
+      "As soon as I rolled in, I ran into Janie Paslaski. Janie and her husband, Frank, own [Middle Creek Farms](https://middlecreek-farms.com/).",
+      "I had photographed Janie holding a little goat. I could not help myself when I saw that moment. It presented itself to me, I accepted the opportunity, and I made the photograph.",
+      "The Saturday before, I had given a physical print to Frank. Yesterday was the first time Janie had seen me since receiving it.",
+      "She hugged me.",
+      {
+        type: "image",
+        src: "/photos/the-market-janie-print.jpeg",
+        alt: "A Canon printer holds a glossy portrait print of Janie Paslaski smiling while holding a white goat.",
+        caption: "The physical print that returned to me as a hug.",
+        credit: "Photograph and print by John Guest, Photography Fit 2 Print.",
+        width: 2268,
+        height: 4032,
+      },
+      "My day felt blessed right out of the gate.",
+      "A photograph had left my hands, entered someone else’s life, and returned to me as gratitude. There was no sales pitch or transaction between us. Just a picture, a hug and a little humanity.",
+      "> What that can do for the wounded parts of us all.",
+      "My photography plan for the market was simple. I was shooting with intention and purpose. I wanted to make beautiful images, but I also wanted to make connections that were neither fake nor transactional.",
+      "A real handshake. A pat on the back. A conversation that did not begin with somebody trying to sell something.",
+      "Portraits that look and feel like the people standing in front of me.",
+      "The interaction between subject and photographer felt warm. More importantly, it was warmly received. People did not seem to treat my camera like an intrusion. To me, it felt like a return to a time when we were not so far apart.",
+      "I really miss those days.",
+      "Everywhere I looked, small relationships were happening. People sat together and talked. A child rested against someone carrying him. A dog looked directly into my camera like he had been waiting all morning for me to arrive. A man walked through the market with a beautiful white bird perched on his shoulder.",
+      {
+        type: "image",
+        src: "/photos/the-market-conversation.jpeg",
+        alt: "Two people sit facing each other in conversation on a bench outside the McLean County Museum of History.",
+        caption: "A real conversation in the middle of the market.",
+        credit: "Photograph by John Guest, Photography Fit 2 Print.",
+        width: 1536,
+        height: 1025,
+      },
+      {
+        type: "image",
+        src: "/photos/the-market-parent-child.jpeg",
+        alt: "An adult carries a young child beneath the trees near the Downtown Bloomington Farmers Market.",
+        caption: "Small relationships were happening everywhere I looked.",
+        credit: "Photograph by John Guest, Photography Fit 2 Print.",
+        width: 1536,
+        height: 1025,
+      },
+      {
+        type: "image",
+        src: "/photos/the-market-corgi.jpeg",
+        alt: "A bright-eyed corgi looks toward the camera while riding in a carrier on a person’s back.",
+        caption: "Some subjects know exactly where the camera is.",
+        credit: "Photograph by John Guest, Photography Fit 2 Print.",
+        width: 2308,
+        height: 1540,
+      },
+      {
+        type: "image",
+        src: "/photos/the-market-cockatoo.jpeg",
+        alt: "A man wearing sunglasses and a Green Bay Packers cap carries a white cockatoo on his shoulder.",
+        caption: "The market had no shortage of personality.",
+        credit: "Photograph by John Guest, Photography Fit 2 Print.",
+        width: 2499,
+        height: 1667,
+      },
+      "These were not props or pieces of content. They were people living their lives, and for a few seconds they allowed me to witness them.",
+      "Then [Micro Spice](https://www.shireenbanigan.com/events/micro-spice-farmers-market-aug2026) began playing “Die With a Smile.”",
+      {
+        type: "image",
+        src: "/photos/the-market-micro-spice.jpeg",
+        alt: "Micro Spice performs on the museum steps with vocals, saxophone and acoustic guitar as families move through the background.",
+        caption: "Micro Spice performing at the Downtown Bloomington Farmers Market.",
+        credit: "Photograph by John Guest, Photography Fit 2 Print.",
+        width: 1638,
+        height: 1093,
+      },
+      "I had heard the song before, but yesterday I listened to it.",
+      "> There is a difference.",
+      "The words reached someplace inside me that I was not prepared to visit in the middle of the Farmers Market. I rushed off to the side with tears streaming from underneath my Ray-Bans.",
+      "I could not tell whether I was feeling the pain of a broken heart or confronting some brokenness inside me.",
+      "Maybe it was both.",
+      "Or maybe God’s plan was unfolding right there. Maybe the tears were not evidence that something was wrong. Maybe they were evidence of His presence.",
+      "The music kept playing. People kept walking through the market. Life continued all around me while I sat off to the side, crying behind my sunglasses and feeling everything sobriety had returned to me.",
+      "> Clarity is a gift. Nobody tells you how much it can hurt.",
+      "I have always had the gift of gab. Anybody who knows me knows that. But listening is a different gift. Sobriety has given me the ability to hear words beyond the melody and appreciate meanings I may not have been available to receive before.",
+      "The John Guest Experience had not always been fun.",
+      "This version of me feels different. This version feels special because I was fully present for my own life.",
+      "Then I met Brian.",
+      "[Brian K. Simpson](https://brianksimpson.com/) is a talented pastel and charcoal artist. I told him that I see him around all the time. I often find myself watching for the opportunity to photograph him drawing someone interesting.",
+      {
+        type: "image",
+        src: "/photos/the-market-brian-drawing.jpeg",
+        alt: "Brian K. Simpson stands at his easel drawing a seated child near an Illinois Route 66 display in Downtown Bloomington.",
+        caption: "Brian at work before we ever officially met.",
+        credit: "Photograph by John Guest, Photography Fit 2 Print.",
+        width: 1536,
+        height: 1025,
+      },
+      "He had appeared in my work before we ever officially met. That makes sense because Brian is as much a part of this art community as anyone.",
+      "I have always believed that we are all artists. We simply use different tools and techniques.",
+      "Brian works from life with pastel and charcoal. I work with light and a camera.",
+      "> Yesterday, the portrait artist became my portrait.",
+      {
+        type: "image",
+        src: "/photos/the-market-brian-portrait.jpeg",
+        alt: "Artist Brian K. Simpson stands beside his easel outside the McLean County Museum of History wearing a straw hat and round glasses.",
+        caption: "Yesterday, the portrait artist became my portrait.",
+        credit: "Photograph by John Guest, Photography Fit 2 Print.",
+        width: 1024,
+        height: 1536,
+      },
+      "Meeting Brian and making his photograph completed my day.",
+      "It began with one photograph returning to me as a hug. It ended with another photograph beginning.",
+      "Somewhere in between, the music brought me to tears and reminded me that I was still here to experience all of it.",
+      "> Fit 2 Capture. Fit 2 Curate. Fit 2 Print.",
+    ],
+  },
   {
     slug: "moments-matter",
     title: "Moments Matter",
