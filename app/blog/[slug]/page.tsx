@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { BLOG_POSTS } from "@/lib/blog-posts";
+import { BLOG_POSTS, type BlogContent } from "@/lib/blog-posts";
 import { FinalCta } from "@/components/final-cta";
 
 export function generateStaticParams() {
@@ -50,11 +50,59 @@ function formatDate(iso: string) {
  *  - "> Emphasis text"  -> rendered as a centered, gold pull-quote for a dramatic beat
  * Everything else renders as a normal body paragraph.
  */
-function renderParagraph(paragraph: string, key: number) {
+function renderInlineLinks(text: string) {
+  return text.split(/(\[[^\]]+\]\(https?:\/\/[^)]+\))/g).map((part, index) => {
+    const match = part.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/);
+    if (!match) return part;
+
+    return (
+      <a
+        key={`${match[2]}-${index}`}
+        href={match[2]}
+        target="_blank"
+        rel="noreferrer"
+        className="font-medium text-[var(--accent)] underline decoration-white/20 underline-offset-4 transition hover:decoration-[var(--accent)]"
+      >
+        {match[1]}
+      </a>
+    );
+  });
+}
+
+function renderParagraph(paragraph: BlogContent, key: number) {
+  if (typeof paragraph !== "string") {
+    const portrait = paragraph.height > paragraph.width;
+
+    return (
+      <figure key={key} className="my-10">
+        <Image
+          src={paragraph.src}
+          alt={paragraph.alt}
+          width={paragraph.width}
+          height={paragraph.height}
+          className={
+            portrait
+              ? "mx-auto h-auto max-h-[75vh] w-auto max-w-full rounded-lg"
+              : "h-auto w-full rounded-lg"
+          }
+          sizes="(min-width: 768px) 672px, calc(100vw - 48px)"
+        />
+        {(paragraph.caption || paragraph.credit) && (
+          <figcaption className="mt-3 text-sm text-white/50">
+            {paragraph.caption && <span className="block">{paragraph.caption}</span>}
+            {paragraph.credit && (
+              <span className="mt-1 block text-xs text-white/35">{paragraph.credit}</span>
+            )}
+          </figcaption>
+        )}
+      </figure>
+    );
+  }
+
   if (paragraph.startsWith("## ")) {
     return (
       <h2 key={key} className="blog-subhead">
-        {paragraph.slice(3)}
+        {renderInlineLinks(paragraph.slice(3))}
       </h2>
     );
   }
@@ -62,12 +110,12 @@ function renderParagraph(paragraph: string, key: number) {
   if (paragraph.startsWith("> ")) {
     return (
       <p key={key} className="blog-pull">
-        {paragraph.slice(2)}
+        {renderInlineLinks(paragraph.slice(2))}
       </p>
     );
   }
 
-  return <p key={key}>{paragraph}</p>;
+  return <p key={key}>{renderInlineLinks(paragraph)}</p>;
 }
 
 export default async function BlogPost({
@@ -95,17 +143,34 @@ export default async function BlogPost({
 
         {post.image && (
           <figure className="mb-10">
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg md:aspect-[16/10]">
+            {post.imageWidth && post.imageHeight ? (
               <Image
                 src={post.image}
                 alt={post.imageAlt ?? post.title}
-                fill
-                className="object-cover"
+                width={post.imageWidth}
+                height={post.imageHeight}
+                className="h-auto w-full rounded-lg"
                 priority
+                sizes="(min-width: 768px) 672px, calc(100vw - 48px)"
               />
-            </div>
-            {post.imageCaption && (
-              <figcaption className="mt-3 text-sm text-white/50">{post.imageCaption}</figcaption>
+            ) : (
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg md:aspect-[16/10]">
+                <Image
+                  src={post.image}
+                  alt={post.imageAlt ?? post.title}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            )}
+            {(post.imageCaption || post.imageCredit) && (
+              <figcaption className="mt-3 text-sm text-white/50">
+                {post.imageCaption && <span className="block">{post.imageCaption}</span>}
+                {post.imageCredit && (
+                  <span className="mt-1 block text-xs text-white/35">{post.imageCredit}</span>
+                )}
+              </figcaption>
             )}
           </figure>
         )}
