@@ -41,6 +41,42 @@ export interface BlogPost {
  */
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: "a-song-moved-me-to-tears",
+    title: "A Song Moved Me to Tears",
+    excerpt:
+      "While Micro Spice performed “Die With a Smile,” one refrain brought nearly twenty years of love, loss, growth, and hard-earned clarity rushing back.",
+    date: "2026-08-24",
+    seoTitle: "A Song Moved Me to Tears | Behind the Print",
+    metaDescription:
+      "A live performance opens the door to love, emotional maturity, and the hope of facing life’s final moment beside someone who matters.",
+    tags: [
+      "Behind The Print",
+      "Live Music",
+      "Emotional Maturity",
+      "Love",
+      "Personal Reflection",
+    ],
+    image: "/photos/the-market-micro-spice.jpeg",
+    imageAlt:
+      "Micro Spice performs on the museum steps with vocals, saxophone and acoustic guitar as families move through the background.",
+    imageCaption: "Micro Spice performing at the Downtown Bloomington Farmers Market.",
+    imageCredit: "Photograph by John Guest, Photography Fit 2 Print.",
+    imageWidth: 1638,
+    imageHeight: 1093,
+    content: [
+      "Micro Spice was performing “Die With a Smile” when the words hit me like a ton of bricks.",
+      "> “If the world was ending, I’d wanna be next to you.”",
+      "That was enough.",
+      "I sat there with emotions overflowing as every meaningful relationship in my life passed through my mind. I vacillated between the man I was before forty and the man sitting there now, nearly twenty years on the other side of it.",
+      "That may be the biggest pivot in my life. I am still here, carrying nearly twenty more years of experience. I bear every bump and bruise. Every time I opened my heart. Every time I wasn’t emotionally mature enough to handle what came with it. Every time I loved somebody but didn’t yet know how to love them well.",
+      "Age doesn’t erase any of that. If anything, clarity makes you look at it more honestly.",
+      "The refrain reminded me that our time will come. None of us knows when. But I guess the hope for all of us is that, if it is God’s will, when the world ends for us, we’ll be holding on to that special someone.",
+      "And we will, indeed, die with a smile.",
+      "That is what art can do. A song can find the part of you that has been quietly carrying an entire lifetime and, without warning, open the door.",
+      "> Fit 2 Capture. Fit 2 Curate. Fit 2 Print.",
+    ],
+  },
+  {
     slug: "the-market",
     title: "The Market",
     excerpt:
