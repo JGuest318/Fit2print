@@ -4,10 +4,13 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { BLOG_POSTS, type BlogContent } from "@/lib/blog-posts";
+import { EXTRA_BLOG_POSTS } from "@/lib/blog-posts-extra";
 import { FinalCta } from "@/components/final-cta";
 
+const ALL_BLOG_POSTS = [...EXTRA_BLOG_POSTS, ...BLOG_POSTS];
+
 export function generateStaticParams() {
-  return BLOG_POSTS.map((post) => ({ slug: post.slug }));
+  return ALL_BLOG_POSTS.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({
@@ -16,7 +19,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = BLOG_POSTS.find((p) => p.slug === slug);
+  const post = ALL_BLOG_POSTS.find((p) => p.slug === slug);
   if (!post) return {};
 
   const title = post.seoTitle ?? `${post.title} | Behind The Print`;
@@ -124,7 +127,7 @@ export default async function BlogPost({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = BLOG_POSTS.find((p) => p.slug === slug);
+  const post = ALL_BLOG_POSTS.find((p) => p.slug === slug);
   if (!post) notFound();
 
   return (
