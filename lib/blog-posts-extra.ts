@@ -113,7 +113,7 @@ export const EXTRA_BLOG_POSTS: BlogPost[] = [
       "I'm just going to make them wait their turn.",
       "And in 30 days, instead of asking what I think about it, I'll look at what I finished.",
       "Photography Fit 2 Print",
-      "> Fit 2 Capture. Fit 2 Curate. Fit 2 Print.",
+      "Fit to Capture | Fit to Curate | Fit to Print",
     ],
   },
 ];
