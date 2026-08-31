@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BLOG_POSTS } from "@/lib/blog-posts";
+import { EXTRA_BLOG_POSTS } from "@/lib/blog-posts-extra";
+
+const ALL_BLOG_POSTS = [...EXTRA_BLOG_POSTS, ...BLOG_POSTS];
 
 export const metadata: Metadata = {
   title: "Behind The Print | Fit 2 Print Blog",
@@ -36,7 +39,7 @@ export default function Blog() {
       </div>
 
       <div className="mx-auto mt-16 max-w-3xl">
-        {BLOG_POSTS.length === 0 ? (
+        {ALL_BLOG_POSTS.length === 0 ? (
           <div className="rounded-lg border border-white/10 px-6 py-16 text-center">
             <p className="text-white/60">
               New stories are on the way &mdash; check back soon.
@@ -44,7 +47,7 @@ export default function Blog() {
           </div>
         ) : (
           <div className="flex flex-col divide-y divide-white/10">
-            {BLOG_POSTS.map((post) => (
+            {ALL_BLOG_POSTS.map((post) => (
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
