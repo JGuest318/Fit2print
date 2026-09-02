@@ -2,6 +2,58 @@ import type { BlogPost } from "@/lib/blog-posts";
 
 export const EXTRA_BLOG_POSTS: BlogPost[] = [
   {
+    slug: "i-had-to-live-with-this-one",
+    title: "I Had to Live With This One",
+    excerpt:
+      "Some photographs are finished when the editing is done. Others keep calling you back. After creating this portrait of Alonna Gibson at ShutterFest 2024, I needed to know what would happen when the image left the screen and became a 13 × 19 inch fine-art print.",
+    date: "2026-09-02",
+    seoTitle: "I Had to Live With This One | Behind The Print",
+    metaDescription:
+      "John Guest reflects on printing Alonna Gibson’s ShutterFest portrait at 13 × 19 inches and why some photographs need to exist beyond a screen.",
+    tags: [
+      "Behind The Print",
+      "Alonna Gibson",
+      "ShutterFest 2024",
+      "Portrait Photography",
+      "Fine Art Printing",
+      "Canon imagePROGRAF PRO-1000",
+    ],
+    image: "/photos/alonna-gibson-shutterfest-2024.jpg",
+    imageAlt:
+      "Portrait of Alonna Gibson surrounded by dark feathers, wearing a sparkling silver ensemble under cool blue and warm light.",
+    imageCaption: "Alonna Gibson, photographed at ShutterFest 2024.",
+    imageCredit: "Photograph and print by John Guest, Photography Fit 2 Print.",
+    imageWidth: 1707,
+    imageHeight: 2560,
+    content: [
+      "Alonna Gibson is enchanting in this photograph. I said something similar when I first shared the image on Facebook, but what I was feeling went further than simply thinking I had made a beautiful portrait. I kept coming back to it.",
+      "The photograph was created at ShutterFest 2024 with my Canon EOS R and RF85mm F2 Macro IS STM. I photographed it at 85mm, 1/200 of a second, f/2.8 and ISO 200. Those are the technical facts of the capture, and they matter, but none of them really explain what happened afterward.",
+      "What stayed with me was the way everything came together. Alonna’s expression has this quiet confidence to it. The feathers surround her without swallowing her. Cool blue light works its way through one side of the photograph while the warmer tones answer from the other. Then there is that ensemble. Every stone, every reflective surface and every little shimmer seems to find some piece of the light.",
+      "I could appreciate all of that on a screen. I could zoom in, inspect the details and convince myself I had seen the photograph, but I had not seen it yet. I had already started imagining the print.",
+      "That happens to me sometimes. An image crosses a line where I stop thinking about it as something that belongs on a monitor, a phone or a social media feed. I start wondering what it will do when it has physical dimensions. How will the colors behave on paper? Will those feathers still feel as deep? What happens to all of that sparkle when reflected light actually moves across the surface? Most importantly, what does the photograph feel like when I can stand in front of it instead of looking through a screen? I needed to know.",
+      "So I printed Alonna on 13 × 19 inch Canon Fine Art Smooth paper using my Canon imagePROGRAF PRO-1000, and there it was. Nothing about the photograph had changed, yet my relationship with it had. The pixels were the same. Alonna was the same. My decisions during the capture and editing were already made. What changed was how I experienced the image.",
+      "A physical print occupies space with you. I could move closer and look at the small reflections scattered across her wardrobe, then back away and let the feathers and color become the composition again. The photograph responded differently as the room light changed. Instead of reaching for a screen and opening a file, I could simply look over and there she was.",
+      "I even recorded video of the print because I wanted to capture some of what I was experiencing.",
+      {
+        type: "video",
+        src: "/videos/alonna-print-pro1000.mov",
+        poster: "/photos/alonna-print-pro1000-poster.jpg",
+        title: "Alonna Gibson’s portrait emerging from the Canon imagePROGRAF PRO-1000",
+        caption: "The 13 × 19 inch print emerging from the Canon imagePROGRAF PRO-1000.",
+        credit: "Video by John Guest, Photography Fit 2 Print.",
+        width: 540,
+        height: 960,
+      },
+      "There is some irony in making a digital video to explain why the digital photograph was not enough, but maybe that makes the point better. I was not trying to prove that one medium was superior to another. I was documenting the moment when an image I had worked on became a physical piece of photographic artwork. I wanted to live with the print, and that phrase has stayed with me.",
+      "We make an incredible number of photographs now, and most of them are consumed very quickly. We look, swipe, maybe zoom, perhaps tap a heart, and continue moving. Even photographs that matter to us can eventually disappear underneath thousands of other photographs in a camera roll or on a hard drive.",
+      "A print asks something different of us. Somebody has to decide that this particular photograph deserves another step. It deserves the paper. It deserves the ink. It deserves the time spent looking at the finished result and deciding whether what came out of the printer represents what you intended when you first created the image.",
+      "Printing also exposes you. A screen can be forgiving in ways paper is not. Color, tonal relationships, sharpening, texture and small editing decisions become part of a finished object. My PRO-1000 does not care how much I like the photograph. The print tells me what is actually there.",
+      "That is one reason printmaking remains important to my photography. Printing is not merely a delivery option sitting at the end of the process. It is another stage of the craft. Capture gives me the raw material. Curation determines what deserves my attention. Editing helps me bring the photograph toward the image I imagined. Printing forces me to finish the thought, and sometimes a photograph surprises me once it gets there.",
+      "When I first shared Alonna’s portrait, I wrote that every sparkling shimmer of her ensemble could brighten the mood and day of that special someone. Looking back at those words, I realize I was already thinking about the photograph as something more than a Facebook post. I was imagining the print before I printed it. Now I have lived with it, and I like it even more.",
+      ">> Fit 2 Capture. | Fit 2 Curate. | Fit 2 Print.",
+    ],
+  },
+  {
     slug: "an-extraordinary-collection-of-beginnings",
     title: "An Extraordinary Collection of Beginnings",
     excerpt:

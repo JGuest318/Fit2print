@@ -105,3 +105,8 @@ body {
   color: var(--accent);
   font-size: clamp(1.4rem, 3.2vw, 2.1rem);
 }
+
+.blog-pull--mixed-case {
+  text-transform: none;
+  text-align: left;
+}

@@ -44,6 +44,7 @@ function formatDate(iso: string) {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "UTC",
   });
 }
 
@@ -51,6 +52,7 @@ function formatDate(iso: string) {
  * Post `content` paragraphs support two lightweight editorial markers:
  *  - "## Heading text"  -> rendered as a gold, display-font subhead with a rule above it
  *  - "> Emphasis text"  -> rendered as a centered, gold pull-quote for a dramatic beat
+ *  - ">> Emphasis text" -> rendered as a centered, gold pull-quote preserving letter case
  * Everything else renders as a normal body paragraph.
  */
 function renderInlineLinks(text: string) {
@@ -75,6 +77,37 @@ function renderInlineLinks(text: string) {
 function renderParagraph(paragraph: BlogContent, key: number) {
   if (typeof paragraph !== "string") {
     const portrait = paragraph.height > paragraph.width;
+
+    if (paragraph.type === "video") {
+      return (
+        <figure key={key} className="my-10">
+          <video
+            src={paragraph.src}
+            poster={paragraph.poster}
+            title={paragraph.title}
+            width={paragraph.width}
+            height={paragraph.height}
+            controls
+            muted
+            playsInline
+            preload="metadata"
+            className={
+              portrait
+                ? "mx-auto h-auto max-h-[75vh] w-auto max-w-full rounded-lg bg-black"
+                : "h-auto w-full rounded-lg bg-black"
+            }
+          />
+          {(paragraph.caption || paragraph.credit) && (
+            <figcaption className="mt-3 text-sm text-white/50">
+              {paragraph.caption && <span className="block">{paragraph.caption}</span>}
+              {paragraph.credit && (
+                <span className="mt-1 block text-xs text-white/35">{paragraph.credit}</span>
+              )}
+            </figcaption>
+          )}
+        </figure>
+      );
+    }
 
     return (
       <figure key={key} className="my-10">
@@ -107,6 +140,14 @@ function renderParagraph(paragraph: BlogContent, key: number) {
       <h2 key={key} className="blog-subhead">
         {renderInlineLinks(paragraph.slice(3))}
       </h2>
+    );
+  }
+
+  if (paragraph.startsWith(">> ")) {
+    return (
+      <p key={key} className="blog-pull blog-pull--mixed-case">
+        {renderInlineLinks(paragraph.slice(3))}
+      </p>
     );
   }
 

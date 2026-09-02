@@ -8,7 +8,18 @@ export interface BlogImage {
   height: number;
 }
 
-export type BlogContent = string | BlogImage;
+export interface BlogVideo {
+  type: "video";
+  src: string;
+  poster: string;
+  title: string;
+  caption?: string;
+  credit?: string;
+  width: number;
+  height: number;
+}
+
+export type BlogContent = string | BlogImage | BlogVideo;
 
 export interface BlogPost {
   slug: string;
@@ -16,7 +27,7 @@ export interface BlogPost {
   excerpt: string;
   /** ISO date string, e.g. "2026-08-06" */
   date: string;
-  /** Each entry is one paragraph. Prefix with "## " for a subhead, "> " for a pull-quote. */
+  /** Each entry is one paragraph. Prefix with "## " for a subhead, "> " for an uppercase pull-quote, or ">> " for a mixed-case pull-quote. */
   content: BlogContent[];
   /** Optional hero photo for posts that ship with a specific image (use as-is, unaltered). */
   image?: string;
