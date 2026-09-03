@@ -74,6 +74,7 @@ export const EXTRA_BLOG_POSTS: BlogPost[] = [
       "Better yet, the print can remain.",
       "Maybe that is one of the quiet responsibilities I have accepted as a photographer and printmaker. I cannot restore every line history severed. I cannot recover every name that disappeared or every story that was never written down. But I can pay attention to the people standing in front of me now. I can make photographs with intention. I can print the ones that matter.",
       "And when somebody goes looking for us later, maybe we can make damn sure the paper trail doesn’t run cold.",
+      ">> Fit 2 Capture. | Fit 2 Curate. | Fit 2 Print.",
     ],
   },
   {
