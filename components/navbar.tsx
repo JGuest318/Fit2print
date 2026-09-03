@@ -23,7 +23,7 @@ export function Navbar() {
         <Link href="/" className="flex items-center">
           <Image src={IMAGES.logo} alt="Fit2Print" width={150} height={36} priority className="h-8 w-auto" />
         </Link>
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-8 lg:flex">
           {links.map((l) => (
             <Link
               key={l.href}
@@ -34,7 +34,7 @@ export function Navbar() {
             </Link>
           ))}
         </nav>
-        <div className="hidden items-center gap-4 md:flex">
+        <div className="hidden items-center gap-4 lg:flex">
           <a href={SITE.phoneHref} className="text-sm text-white/70">
             {SITE.phone}
           </a>
@@ -45,12 +45,17 @@ export function Navbar() {
             Book a Session
           </Link>
         </div>
-        <button className="md:hidden text-white" onClick={() => setOpen(!open)}>
+        <button
+          className="text-white lg:hidden"
+          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={open}
+          onClick={() => setOpen(!open)}
+        >
           {open ? <X /> : <Menu />}
         </button>
       </div>
       {open && (
-        <div className="flex flex-col gap-4 border-t border-white/10 px-6 py-6 md:hidden">
+        <div className="flex flex-col gap-4 border-t border-white/10 px-6 py-6 lg:hidden">
           {links.map((l) => (
             <Link
               key={l.href}

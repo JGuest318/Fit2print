@@ -2,6 +2,81 @@ import type { BlogPost } from "@/lib/blog-posts";
 
 export const EXTRA_BLOG_POSTS: BlogPost[] = [
   {
+    slug: "summers-end",
+    title: "Summer’s End",
+    excerpt:
+      "At the end of another summer, joy, cultural continuity, and the finite nature of time sharpen one photographer’s responsibility to make family art that can outlive him.",
+    date: "2026-09-03",
+    seoTitle: "Summer’s End | Behind The Print",
+    metaDescription:
+      "John Guest reflects on summer, Black American cultural continuity, family photographs, and why making physical prints helps preserve the record for those who come after us.",
+    tags: [
+      "Behind The Print",
+      "Summer",
+      "Black American Culture",
+      "Family Art",
+      "Legacy",
+      "Printed Photographs",
+    ],
+    image: "/photos/summers-end-hero.jpg",
+    imageAlt:
+      "John and AI study a freshly printed photograph as a late-summer community gathering winds down under string lights.",
+    imageCaption: "The gathering ends. The photograph remains.",
+    imageCredit:
+      "Creative direction by John Guest. AI-assisted illustration using the approved John + AI character system.",
+    imageWidth: 1672,
+    imageHeight: 941,
+    content: [
+      "It’s that time of year again. Nearly the end of summer, and this one came and went like a fart in the wind.",
+      "A summer of farmers markets and festivals. Festivals of Joy. Celebrations of Pride, humanity, peace, community. Under normal circumstances we’d probably be reaching for hoodies by now. Instead, it’s 97 degrees and we’re baking slow, like somebody left the grill on too long over Labor Day weekend. Somebody’s asking who made the potato salad. Somebody’s telling the DJ to turn down that bump-ta-dump and put some Luther on. Pour the Henny and suddenly everybody knows how to act right.",
+      "That’s the sound of a summer worth remembering. And maybe that’s what has been sitting with me lately. Not just the photographs I made, but everything underneath them. The customs. The food. The music. The way people greet one another. The jokes that only make sense if you’ve been around long enough. The way a neighborhood sounds on a Saturday in August. The little rituals nobody thinks to call rituals because they’re simply part of life.",
+      {
+        type: "image",
+        src: "/photos/summers-end-day-begins.jpg",
+        alt: "John checks his camera beside AI at sunrise while a market and accessible van prepare for the day ahead.",
+        caption: "Every remembered summer starts as an ordinary day.",
+        credit:
+          "Creative direction by John Guest. AI-assisted illustration using the approved John + AI character system.",
+        width: 1672,
+        height: 941,
+      },
+      "A few weeks ago I was photographing the Festival of Joy here in Bloomington. Camera up, doing the work I love, watching people celebrate themselves and their culture openly and unapologetically. Somewhere in the middle of all that joy, something unexpected showed up. Jealousy.",
+      "Not the kind that makes you bitter. Not resentment. Just a quick pang that caught me off guard. I was looking at people celebrating customs that had a visible connection to somewhere. A culture with language, clothing, music, ritual, food, history and a line that could still be traced backward. People could point toward a place on the map and say, in one form or another, this is part of where we come from.",
+      "And I felt the absence of that.",
+      "That feeling forced me to think about something I already knew but don’t always walk around consciously carrying. Black Americans descended from slavery helped build this country. Our labor is embedded in its foundation, its wealth, its fields, roads, railroads, cities and industries. Generations of people worked, created, endured, survived and contributed while being denied something deeply human in the process: the ability to preserve an unbroken connection to who they had been before.",
+      "Names were changed. Families were separated. Languages were interrupted. Records were incomplete, ignored, destroyed or never created in the first place. Specific connections to villages, nations, ethnic groups, traditions and bloodlines were often severed deliberately. That loss is difficult to measure because you’re trying to measure something that should have been passed down naturally.",
+      "But here is the part I keep coming back to. We still created culture. We still created joy. We still created customs. We created music that changed the world. We created food traditions, family rituals, church traditions, neighborhood traditions, ways of speaking, celebrating, mourning, laughing and gathering that are unmistakably ours.",
+      {
+        type: "image",
+        src: "/photos/summers-end-family-gathering.jpg",
+        alt: "John laughs with AI, family, and creative collaborators during a summer cookout surrounded by photographs, music, and food.",
+        caption: "Culture lives in the way we gather, laugh, make, and remember.",
+        credit:
+          "Creative direction by John Guest. AI-assisted illustration using the approved John + AI character system.",
+        width: 1672,
+        height: 941,
+      },
+      "We figured out how to turn a backyard into sacred ground for an afternoon. We figured out how to make a cookout feel like a family reunion even when half the people there weren’t technically related. We created traditions strong enough that you can walk into somebody else’s gathering hundreds of miles from home, hear the music, smell the food, catch the rhythm of the conversation and immediately recognize something familiar.",
+      "So maybe the thing I was jealous of was not the existence of culture. We have plenty of that. Maybe it was continuity. The ability to say, with certainty, this came from here, and here is the line connecting me back to it. There is grief in recognizing that some of those lines were cut, but there is also something extraordinary in recognizing what people built afterward.",
+      "Funny how I used to hear the old guys talk about getting older. They would say things like, “I might have ten good summers left,” or “I don’t know how many more summers I’ve got.” When you’re young, that sounds like old-man talk. Summer keeps coming. You assume there will always be another one.",
+      "Now I’m 59.",
+      "I’m not sitting around counting down my summers, but I understand what those men were saying in a way I couldn’t before. Time starts feeling less theoretical. I’m happy and grateful for the 59 summers I’ve already been fortunate enough to experience. Some were better than others. Some I probably wasted. Some I barely remember. Some changed the direction of my life. All of them belong to the story.",
+      "That awareness has also changed the way I think about family photographs. I’m no longer satisfied with making pictures that live on a phone until somebody upgrades it, or on a hard drive nobody remembers the password to. If I make something meaningful of my family, my friends or my community, I want it to have a chance at surviving me.",
+      "That is where Photography Fit 2 Print comes into this for me.",
+      "Fit 2 Capture has always meant being present enough to recognize the moment. Fit 2 Curate means having enough judgment to decide which moments deserve more attention. But Fit 2 Print is where the photograph becomes something different. It becomes physical. Something your hand can touch. Something that can sit on a wall, live in an album, get passed from one person to another and eventually end up in the hands of somebody who wasn’t even alive when the shutter was pressed.",
+      "That matters more to me at 59 than it probably would have at 29.",
+      "I want to make family art.",
+      "Not just pictures of family. Art made from the people, places, relationships and experiences that constitute a life. A photograph of your grandmother sitting at the picnic table might look ordinary today. Twenty years from now, everybody could be fighting over who gets the print. The portrait you almost didn’t bother making may eventually become the picture your children use to explain who somebody was.",
+      "You rarely know which photograph will become important while you’re making it. That portrait of somebody laughing at a festival may someday be one of the few surviving records of what that community looked and felt like during this particular moment in time. The picture of cousins standing around the grill may become evidence of a whole generation that gathered there every Labor Day.",
+      "That is part of what I am doing when I raise the camera. Yes, I’m looking for light, composition, expression and timing. I’m practicing a craft that I take seriously. But increasingly, I’m also thinking about permanence. I’m creating evidence that says we were here, we loved one another, we gathered, we celebrated, we got on each other’s nerves, we laughed, and we made something beautiful out of the time we had.",
+      "Summer will end. Eventually somebody will finally put the hoodie on. The farmers markets will close for the season, the festivals will pack up, the grills will cool down and Luther will stop playing sometime around midnight. Another summer will become something we talk about in the past tense.",
+      "The photograph can remain.",
+      "Better yet, the print can remain.",
+      "Maybe that is one of the quiet responsibilities I have accepted as a photographer and printmaker. I cannot restore every line history severed. I cannot recover every name that disappeared or every story that was never written down. But I can pay attention to the people standing in front of me now. I can make photographs with intention. I can print the ones that matter.",
+      "And when somebody goes looking for us later, maybe we can make damn sure the paper trail doesn’t run cold.",
+    ],
+  },
+  {
     slug: "i-had-to-live-with-this-one",
     title: "I Had to Live With This One",
     excerpt:
