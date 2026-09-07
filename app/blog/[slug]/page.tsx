@@ -53,6 +53,7 @@ function formatDate(iso: string) {
  *  - "## Heading text"  -> rendered as a gold, display-font subhead with a rule above it
  *  - "> Emphasis text"  -> rendered as a centered, gold pull-quote for a dramatic beat
  *  - ">> Emphasis text" -> rendered as a centered, gold pull-quote preserving letter case
+ *  - ">>> Emphasis text" -> mixed-case pull-quote aligned with the body text's left edge
  * Everything else renders as a normal body paragraph.
  */
 function renderInlineLinks(text: string) {
@@ -144,6 +145,14 @@ function renderParagraph(paragraph: BlogContent, key: number) {
       <h2 key={key} className="blog-subhead">
         {renderInlineLinks(paragraph.slice(3))}
       </h2>
+    );
+  }
+
+  if (paragraph.startsWith(">>> ")) {
+    return (
+      <p key={key} className="blog-pull blog-pull--mixed-case !ml-0 !mr-0">
+        {renderInlineLinks(paragraph.slice(4))}
+      </p>
     );
   }
 

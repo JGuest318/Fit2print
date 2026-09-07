@@ -62,7 +62,7 @@ export const EXTRA_BLOG_POSTS: BlogPost[] = [
       "Maybe some of those cinematic moments become clear only when we return to them. A summer afternoon. A familiar face. Everybody together, before we knew how much that would mean.",
       "And there they are.",
       "Pieces of paper with memories on them.",
-      ">> Fit to capture. Fit to curate. Fit to print.",
+      ">>> Fit 2 capture. Fit 2 curate. Fit 2 print.",
     ],
   },
   {

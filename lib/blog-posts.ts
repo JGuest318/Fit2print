@@ -29,7 +29,7 @@ export interface BlogPost {
   excerpt: string;
   /** ISO date string, e.g. "2026-08-06" */
   date: string;
-  /** Each entry is one paragraph. Prefix with "## " for a subhead, "> " for an uppercase pull-quote, or ">> " for a mixed-case pull-quote. */
+  /** Each entry is one paragraph. Prefix with "## " for a subhead, "> " for an uppercase pull-quote, ">> " for a mixed-case pull-quote, or ">>> " for a mixed-case pull-quote flush with the body text. */
   content: BlogContent[];
   /** Optional hero photo for posts that ship with a specific image (use as-is, unaltered). */
   image?: string;
