@@ -56,7 +56,10 @@ function formatDate(iso: string) {
  * Everything else renders as a normal body paragraph.
  */
 function renderInlineLinks(text: string) {
-  return text.split(/(\[[^\]]+\]\(https?:\/\/[^)]+\))/g).map((part, index) => {
+  return text.split(/(\[[^\]]+\]\(https?:\/\/[^)]+\)|\*[^*]+\*)/g).map((part, index) => {
+    if (part.startsWith("*") && part.endsWith("*")) {
+      return <em key={`em-${index}`}>{part.slice(1, -1)}</em>;
+    }
     const match = part.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/);
     if (!match) return part;
 
@@ -116,6 +119,7 @@ function renderParagraph(paragraph: BlogContent, key: number) {
           alt={paragraph.alt}
           width={paragraph.width}
           height={paragraph.height}
+          unoptimized={paragraph.unoptimized}
           className={
             portrait
               ? "mx-auto h-auto max-h-[75vh] w-auto max-w-full rounded-lg"
@@ -193,6 +197,7 @@ export default async function BlogPost({
                 alt={post.imageAlt ?? post.title}
                 width={post.imageWidth}
                 height={post.imageHeight}
+                unoptimized={post.imageUnoptimized}
                 className="h-auto w-full rounded-lg"
                 priority
                 sizes="(min-width: 768px) 672px, calc(100vw - 48px)"

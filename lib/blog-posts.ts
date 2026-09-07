@@ -1,5 +1,7 @@
 export interface BlogImage {
   type: "image";
+  /** Serve the original file when the artwork must remain unchanged. */
+  unoptimized?: boolean;
   src: string;
   alt: string;
   caption?: string;
@@ -36,6 +38,7 @@ export interface BlogPost {
   imageCredit?: string;
   imageWidth?: number;
   imageHeight?: number;
+  imageUnoptimized?: boolean;
   /** Optional SEO overrides — falls back to `title` / `excerpt` when omitted. */
   seoTitle?: string;
   metaDescription?: string;

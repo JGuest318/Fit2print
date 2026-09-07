@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/site";
 import { BLOG_POSTS } from "@/lib/blog-posts";
+import { EXTRA_BLOG_POSTS } from "@/lib/blog-posts-extra";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = `https://${SITE.domain}`;
@@ -13,7 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === "" ? 1 : 0.8,
   }));
 
-  const postEntries = BLOG_POSTS.map((post) => ({
+  const postEntries = [...EXTRA_BLOG_POSTS, ...BLOG_POSTS].map((post) => ({
     url: `${base}/blog/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: "yearly" as const,
