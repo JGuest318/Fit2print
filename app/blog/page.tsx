@@ -3,7 +3,15 @@ import Link from "next/link";
 import { BLOG_POSTS } from "@/lib/blog-posts";
 import { EXTRA_BLOG_POSTS } from "@/lib/blog-posts-extra";
 
-const ALL_BLOG_POSTS = [...EXTRA_BLOG_POSTS, ...BLOG_POSTS];
+const HINKS_POST = {
+  slug: "hinks-smokehouse-from-folding-table-to-food-truck",
+  title: "Hink’s Smokehouse: From Folding Table to Food Truck",
+  excerpt:
+    "A familiar Farmers’ Market neighbor grows from bottles on a folding table to a full food truck — a small story about consistency, hard work, and recognizing growth around us.",
+  date: "2026-09-08",
+};
+
+const ALL_BLOG_POSTS = [HINKS_POST, ...EXTRA_BLOG_POSTS, ...BLOG_POSTS];
 
 export const metadata: Metadata = {
   title: "Behind The Print | Fit 2 Print Blog",
