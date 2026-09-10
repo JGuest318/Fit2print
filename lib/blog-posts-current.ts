@@ -30,7 +30,8 @@ export const CURRENT_BLOG_POSTS: BlogPost[] = [
       "Sometimes a photograph tells you what it wants to be, but not immediately. Sometimes you have to live with it for a minute.",
       "I had a color portrait from Shutterfest 2026 that I liked. The light was doing what I wanted. The skin had warmth. The lace had texture and delicacy. There was softness in the pose without the image feeling weak, and her expression had that little bit of confidence and stillness that made me keep looking at it. The color version worked. The question was whether color was helping the photograph say what I wanted it to say, or whether it was simply one more thing asking for attention.",
       "That is where the black and white conversation started. Not with a preset or a button, but with the photograph.",
-      "## Before I Take the Color Away, I Want to Know What It Is Giving Me",\n      "The color photograph was already doing a lot of things well. Her warm skin sat against the burgundy of the dress, surrounded by layers of green foliage and cooler tones farther back in the frame. The colors gave me separation almost for free.",
+      "## Before I Take the Color Away, I Want to Know What It Is Giving Me",
+      "The color photograph was already doing a lot of things well. Her warm skin sat against the burgundy of the dress, surrounded by layers of green foliage and cooler tones farther back in the frame. The colors gave me separation almost for free.",
       {
         type: "image",
         src: "/blog/see-it-in-color-before-you-kill-the-color/color-portrait.jpg",
