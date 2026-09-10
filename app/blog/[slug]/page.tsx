@@ -5,9 +5,10 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { BLOG_POSTS, type BlogContent } from "@/lib/blog-posts";
 import { EXTRA_BLOG_POSTS } from "@/lib/blog-posts-extra";
+import { CURRENT_BLOG_POSTS } from "@/lib/blog-posts-current";
 import { FinalCta } from "@/components/final-cta";
 
-const ALL_BLOG_POSTS = [...EXTRA_BLOG_POSTS, ...BLOG_POSTS];
+const ALL_BLOG_POSTS = [...CURRENT_BLOG_POSTS, ...EXTRA_BLOG_POSTS, ...BLOG_POSTS];
 
 export function generateStaticParams() {
   return ALL_BLOG_POSTS.map((post) => ({ slug: post.slug }));
@@ -48,14 +49,6 @@ function formatDate(iso: string) {
   });
 }
 
-/**
- * Post `content` paragraphs support two lightweight editorial markers:
- *  - "## Heading text"  -> rendered as a gold, display-font subhead with a rule above it
- *  - "> Emphasis text"  -> rendered as a centered, gold pull-quote for a dramatic beat
- *  - ">> Emphasis text" -> rendered as a centered, gold pull-quote preserving letter case
- *  - ">>> Emphasis text" -> mixed-case pull-quote aligned with the body text's left edge
- * Everything else renders as a normal body paragraph.
- */
 function renderInlineLinks(text: string) {
   return text.split(/(\[[^\]]+\]\(https?:\/\/[^)]+\)|\*[^*]+\*)/g).map((part, index) => {
     if (part.startsWith("*") && part.endsWith("*")) {
