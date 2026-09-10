@@ -3,9 +3,9 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { FinalCta } from "@/components/final-cta";
 
-const PHOTO_TABLE = "https://at.adobe.com/1gIyLLsUPtpxuVHJ";
-const PHOTO_CUSTOMERS = "https://at.adobe.com/W1Es95TcTXUlyL5e";
-const PHOTO_TRUCK = "https://at.adobe.com/TMawu7DvWg523M3r";
+const PHOTO_TABLE = "/photos/2F3A5231.jpg";
+const PHOTO_CUSTOMERS = "/photos/2F3A5243.jpg";
+const PHOTO_TRUCK = "/photos/2F3A5239.jpg";
 
 export const metadata: Metadata = {
   title: "Hink’s Smokehouse: From Folding Table to Food Truck | Behind The Print",
