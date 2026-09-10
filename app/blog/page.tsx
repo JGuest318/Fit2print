@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BLOG_POSTS } from "@/lib/blog-posts";
 import { EXTRA_BLOG_POSTS } from "@/lib/blog-posts-extra";
+import { CURRENT_BLOG_POSTS } from "@/lib/blog-posts-current";
 
 const HINKS_POST = {
   slug: "hinks-smokehouse-from-folding-table-to-food-truck",
@@ -11,7 +12,7 @@ const HINKS_POST = {
   date: "2026-09-08",
 };
 
-const ALL_BLOG_POSTS = [HINKS_POST, ...EXTRA_BLOG_POSTS, ...BLOG_POSTS];
+const ALL_BLOG_POSTS = [...CURRENT_BLOG_POSTS, HINKS_POST, ...EXTRA_BLOG_POSTS, ...BLOG_POSTS];
 
 export const metadata: Metadata = {
   title: "Behind The Print | Fit 2 Print Blog",
