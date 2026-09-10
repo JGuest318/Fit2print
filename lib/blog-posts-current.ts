@@ -18,12 +18,30 @@ export const CURRENT_BLOG_POSTS: BlogPost[] = [
       "Intentional Photography",
       "Fine Art Printing",
     ],
+    image: "/blog/see-it-in-color-before-you-kill-the-color/bw-portrait.jpg",
+    imageAlt:
+      "Black and white portrait photographed at Shutterfest 2026, framed by foliage",
+    imageCaption: "The finished black and white interpretation.",
+    imageCredit:
+      "Photograph by John Guest, Photography Fit 2 Print. Model: Alec Reichert (@lexxluma).",
+    imageWidth: 800,
+    imageHeight: 1200,
     content: [
       "Sometimes a photograph tells you what it wants to be, but not immediately. Sometimes you have to live with it for a minute.",
       "I had a color portrait from Shutterfest 2026 that I liked. The light was doing what I wanted. The skin had warmth. The lace had texture and delicacy. There was softness in the pose without the image feeling weak, and her expression had that little bit of confidence and stillness that made me keep looking at it. The color version worked. The question was whether color was helping the photograph say what I wanted it to say, or whether it was simply one more thing asking for attention.",
       "That is where the black and white conversation started. Not with a preset or a button, but with the photograph.",
-      "## Before I Take the Color Away, I Want to Know What It Is Giving Me",
-      "The color photograph was already doing a lot of things well. Her warm skin sat against the burgundy of the dress, surrounded by layers of green foliage and cooler tones farther back in the frame. The colors gave me separation almost for free.",
+      "## Before I Take the Color Away, I Want to Know What It Is Giving Me",\n      "The color photograph was already doing a lot of things well. Her warm skin sat against the burgundy of the dress, surrounded by layers of green foliage and cooler tones farther back in the frame. The colors gave me separation almost for free.",
+      {
+        type: "image",
+        src: "/blog/see-it-in-color-before-you-kill-the-color/color-portrait.jpg",
+        alt: "Original color portrait photographed at Shutterfest 2026 with burgundy dress and green foliage",
+        caption:
+          "The color photograph already worked. The question was whether color was still helping the photograph say what I wanted it to say.",
+        credit:
+          "Photograph by John Guest, Photography Fit 2 Print. Model: Alec Reichert (@lexxluma).",
+        width: 800,
+        height: 1200,
+      },
       "Before converting anything, I want to understand what I would be giving up. In this photograph I cared about the softness of the skin, the shape created by the light, the delicacy of the lace, the transitions through the shadows and, most of all, the expression. Black and white drama by itself does not improve a photograph. If I lose the suppleness of the skin, bury the lace, flatten the face or make the light too aggressive, then I have not improved anything. I have just made it monochrome.",
       "## The Photograph Still Has to Feel Good",
       "Photographers can get distracted by channels, curves, black points and contrast and forget that the image still has to feel like something. I want skin to have life. I want the light to move across the body. I want lace to remain soft, fine and dimensional instead of becoming a hard white shape. I want shadow detail where I need it and darkness where it helps the photograph. I want the transition from highlight to shadow to feel natural. And I want the expression to remain the reason you stay with the image.",
@@ -45,6 +63,16 @@ export const CURRENT_BLOG_POSTS: BlogPost[] = [
       "## And Eventually, It Has to Become a Print",
       "For Photography Fit 2 Print, that part is literal. I do not consider the photograph finished simply because it looks right on a monitor. A black and white image can fool you on a bright screen. Shadows can look richer than they will on paper. Tonal transitions can disappear. Lace separation can vanish. Skin that looks luminous on a backlit display can print too dark if the midtones are not carrying enough information.",
       "The print gets a vote. I want to see whether the light still moves the way I intended, whether the skin retains its suppleness, whether the lace remains lace instead of becoming a block of white, whether the blacks have weight without swallowing the photograph, and whether her expression is still the first thing that holds me. If the print says no, I go back. That is part of the craft.",
+      {
+        type: "image",
+        src: "/blog/see-it-in-color-before-you-kill-the-color/print-still.jpg",
+        alt: "Black and white portrait emerging as a physical photographic print",
+        caption:
+          "The final test: watching the black-and-white portrait come off the printer. This is where screen decisions become paper decisions.",
+        credit: "Photography Fit 2 Print",
+        width: 675,
+        height: 1200,
+      },
       "The camera gave me the photograph. The color file gave me the information. The black and white conversion gave me another interpretation. The print tells me whether I actually finished the job. That is why I try to see the color before I kill it.",
       "Model: Alec Reichert / Instagram: [@lexxluma](https://www.instagram.com/lexxluma/)",
       ">>> Fit to capture. Fit to curate. Fit to print.",
