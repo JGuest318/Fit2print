@@ -6,6 +6,7 @@ const nextConfig = {
       { protocol: "https", hostname: "galaxy-prod.tlcdn.com" },
       { protocol: "https", hostname: "cdn.galaxy.ai" },
       { protocol: "https", hostname: "g.tlcdn.com" },
+      { protocol: "https", hostname: "at.adobe.com" },
     ],
   },
 }
