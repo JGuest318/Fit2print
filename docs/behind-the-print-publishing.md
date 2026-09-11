@@ -46,7 +46,9 @@ Before production, verify all of the following against the latest preview deploy
 - Article route returns HTTP 200.
 - Blog index contains the article.
 - Article title, date, body, credits, and tagline are present.
-- Hero and every supporting media asset are referenced by the rendered page.
+- Decode every committed image before publishing; an HTTP 200 or JPEG extension does not prove it is an image.
+- In Chromium and WebKit, check desktop and mobile viewports, scroll to each image, and confirm it decodes with nonzero natural dimensions. Inspect screenshots for the approved artwork and check for horizontal overflow.
+- Hero, supporting images, and Open Graph media must resolve to first-party assets; no temporary hosting or short-link overrides.
 - Canonical URL, Open Graph image, SEO title, and meta description are correct.
 - Sitemap contains the article route.
 - No experimental placeholder assets remain in the release tree.

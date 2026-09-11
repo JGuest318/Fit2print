@@ -10,23 +10,6 @@ import { FinalCta } from "@/components/final-cta";
 
 const ALL_BLOG_POSTS = [...CURRENT_BLOG_POSTS, ...EXTRA_BLOG_POSTS, ...BLOG_POSTS];
 
-const MEDIA_FALLBACKS: Record<string, string> = {
-  "/blog/see-it-in-color-before-you-kill-the-color/bw-portrait.jpg":
-    "https://at.adobe.com/quz0Exv8d2hmljZx",
-  "/blog/see-it-in-color-before-you-kill-the-color/color-portrait.jpg":
-    "https://at.adobe.com/kRQ0KJk5pqotIV3Q",
-  "/blog/see-it-in-color-before-you-kill-the-color/print-still.jpg":
-    "https://at.adobe.com/Hl5bhw3DYL3ZO952",
-};
-
-function resolveMediaSrc(src: string) {
-  return MEDIA_FALLBACKS[src] ?? src;
-}
-
-function isExternalMedia(src: string) {
-  return /^https?:\/\//.test(resolveMediaSrc(src));
-}
-
 export function generateStaticParams() {
   return ALL_BLOG_POSTS.map((post) => ({ slug: post.slug }));
 }
@@ -53,7 +36,7 @@ export async function generateMetadata({
       description,
       url: `/blog/${post.slug}`,
       images: post.image
-        ? [{ url: resolveMediaSrc(post.image), alt: post.imageAlt ?? post.title }]
+        ? [{ url: post.image, alt: post.imageAlt ?? post.title }]
         : undefined,
     },
   };
@@ -125,16 +108,14 @@ function renderParagraph(paragraph: BlogContent, key: number) {
       );
     }
 
-    const src = resolveMediaSrc(paragraph.src);
-
     return (
       <figure key={key} className="my-10">
         <Image
-          src={src}
+          src={paragraph.src}
           alt={paragraph.alt}
           width={paragraph.width}
           height={paragraph.height}
-          unoptimized={paragraph.unoptimized || isExternalMedia(paragraph.src)}
+          unoptimized={paragraph.unoptimized}
           className={
             portrait
               ? "mx-auto h-auto max-h-[75vh] w-auto max-w-full rounded-lg"
@@ -216,11 +197,11 @@ export default async function BlogPost({
           <figure className="mb-10">
             {post.imageWidth && post.imageHeight ? (
               <Image
-                src={resolveMediaSrc(post.image)}
+                src={post.image}
                 alt={post.imageAlt ?? post.title}
                 width={post.imageWidth}
                 height={post.imageHeight}
-                unoptimized={post.imageUnoptimized || isExternalMedia(post.image)}
+                unoptimized={post.imageUnoptimized}
                 className="h-auto w-full rounded-lg"
                 priority
                 sizes="(min-width: 768px) 672px, calc(100vw - 48px)"
@@ -228,10 +209,9 @@ export default async function BlogPost({
             ) : (
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg md:aspect-[16/10]">
                 <Image
-                  src={resolveMediaSrc(post.image)}
+                  src={post.image}
                   alt={post.imageAlt ?? post.title}
                   fill
-                  unoptimized={isExternalMedia(post.image)}
                   className="object-cover"
                   priority
                 />
