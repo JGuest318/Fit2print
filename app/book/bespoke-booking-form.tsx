@@ -15,21 +15,27 @@ export function BespokeBookingForm() {
 
     const form = event.currentTarget;
     const data = Object.fromEntries(new FormData(form).entries());
-    const response = await fetch("/api/booking/request", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    try {
+      const response = await fetch("/api/booking/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        signal: AbortSignal.timeout(15000),
+      });
 
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      setError(result.error ?? "We could not save your request. Please try again.");
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result?.success !== true) {
+        setError(typeof result?.error === "string" ? result.error : "We could not confirm your request was saved. Please try again.");
+        setState("error");
+        return;
+      }
+
+      setState("success");
+      form.reset();
+    } catch {
+      setError("We could not confirm your request was saved. Please check your connection and try again.");
       setState("error");
-      return;
     }
-
-    setState("success");
-    form.reset();
   }
 
   if (state === "success") {
@@ -91,7 +97,7 @@ export function BespokeBookingForm() {
         disabled={state === "submitting"}
         className="w-full rounded-full bg-[var(--accent)] px-8 py-4 text-sm font-bold uppercase tracking-widest text-black transition hover:bg-white disabled:cursor-wait disabled:opacity-60"
       >
-        {state === "submitting" ? "Saving Request…" : "Request a Bespoke Session"}
+        {state === "submitting" ? "Sending Request…" : "Request a Bespoke Session"}
       </button>
       <p className="text-center text-xs leading-relaxed text-white/35">
         No card information is collected on this page. Payment will only be introduced after the secure payment workflow and PF2P policies are approved for production.
