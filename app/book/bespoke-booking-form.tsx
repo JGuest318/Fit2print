@@ -1,40 +1,60 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 
 type State = "idle" | "submitting" | "success" | "error";
 
 export function BespokeBookingForm() {
   const [state, setState] = useState<State>("idle");
   const [error, setError] = useState("");
+  const [reference, setReference] = useState("");
+  const submission = useRef<{ payload: string; key: string } | null>(null);
+  const sending = useRef(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (sending.current) return;
+    sending.current = true;
     setState("submitting");
     setError("");
 
     const form = event.currentTarget;
     const data = Object.fromEntries(new FormData(form).entries());
     try {
+      const payload = JSON.stringify(data);
+      if (submission.current?.payload !== payload) {
+        submission.current = { payload, key: crypto.randomUUID() };
+      }
+      // Persist only a digest and random key, never customer details, across reloads.
+      const fingerprint = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(payload))))
+        .map(byte => byte.toString(16).padStart(2, "0")).join("");
+      try {
+        const prior = JSON.parse(sessionStorage.getItem("pf2p-inquiry-key") || "null");
+        if (prior?.fingerprint === fingerprint && typeof prior.key === "string") submission.current.key = prior.key;
+        sessionStorage.setItem("pf2p-inquiry-key", JSON.stringify({ fingerprint, key: submission.current.key }));
+      } catch { /* Restricted storage: retain the in-memory key for retries. */ }
       const response = await fetch("/api/booking/request", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json", "Idempotency-Key": submission.current.key },
+        body: payload,
         signal: AbortSignal.timeout(15000),
       });
 
       const result = await response.json().catch(() => ({}));
-      if (!response.ok || result?.success !== true) {
+      if (!response.ok || result?.success !== true || result?.inquiryId !== submission.current.key) {
         setError(typeof result?.error === "string" ? result.error : "We could not confirm your request was saved. Please try again.");
         setState("error");
         return;
       }
 
       setState("success");
+      setReference(result.inquiryId);
       form.reset();
     } catch {
       setError("We could not confirm your request was saved. Please check your connection and try again.");
       setState("error");
+    } finally {
+      sending.current = false;
     }
   }
 
@@ -42,6 +62,7 @@ export function BespokeBookingForm() {
     return (
       <div className="mt-8 border border-[var(--accent)]/50 p-6" role="status">
         <p className="font-[var(--font-display)] text-2xl uppercase text-white">Request received.</p>
+        <p className="mt-3 text-sm text-white/60">Reference: {reference}</p>
         <p className="mt-3 text-sm leading-relaxed text-white/60">
           This is not yet a confirmed booking and no payment has been taken. PF2P will confirm availability before a reservation retainer is requested.
         </p>
