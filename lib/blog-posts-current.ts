@@ -31,13 +31,13 @@ export const CURRENT_BLOG_POSTS: BlogPost[] = [
       "I wasn’t chasing recognition with this photograph. But I’d be lying if I said I never wonder, in those quiet spaces, whether all the years of shooting, editing, printing, studying light, studying people, and studying myself are making me better. Then something like this happens. A photograph I made starts getting seen. People stop. They look. They respond. I didn’t build a campaign around it or try to manufacture a moment. The photograph simply connected.",
       {
         type: "image",
-        src: "/blog/the-pitching-duel-continues/Bri-instagram.png",
+        src: "/blog/the-pitching-duel-continues/Bri-instagram.jpg",
         alt: "Instagram notification celebrating more than 500 views and 944 views for John Guest’s black and white portrait of Briana Thomas",
         caption:
           "Recognition I wasn’t seeking outright, but maybe hoping for in those quiet spaces where I wonder.",
         credit: "Instagram recognition screenshot provided by Photography Fit 2 Print.",
-        width: 941,
-        height: 2048,
+        width: 1206,
+        height: 2622,
         unoptimized: true,
       },
       "That feels like evidence of honed skill. And maybe I shot my shot. The funny thing is, I’ve had more shots like this lately. Enough that I’m beginning to realize the next evolution isn’t only about making better photographs. It’s also about becoming more disciplined with what happens after I press the shutter.",
