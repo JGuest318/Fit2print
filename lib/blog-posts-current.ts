@@ -38,6 +38,7 @@ export const CURRENT_BLOG_POSTS: BlogPost[] = [
         credit: "Instagram recognition screenshot provided by Photography Fit 2 Print.",
         width: 941,
         height: 2048,
+        unoptimized: true,
       },
       "That feels like evidence of honed skill. And maybe I shot my shot. The funny thing is, I’ve had more shots like this lately. Enough that I’m beginning to realize the next evolution isn’t only about making better photographs. It’s also about becoming more disciplined with what happens after I press the shutter.",
       "I get excited by the home runs. I see a frame that hits and I want to run straight toward the finish line. But craftsmanship lives in the rest of the game too. Sometimes it’s a real head-to-head matchup, working deep into the pitch count and refusing to swing just because something is there.",
