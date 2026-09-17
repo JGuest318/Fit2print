@@ -2,6 +2,56 @@ import type { BlogPost } from "@/lib/blog-posts";
 
 export const CURRENT_BLOG_POSTS: BlogPost[] = [
   {
+    slug: "the-pitching-duel-continues",
+    title: "The Pitching Duel Continues",
+    excerpt:
+      "Recognition can confirm that the work is connecting, but the deeper lesson is discipline: slowing down, protecting the person in the photograph, and letting the print reveal whether the job is truly finished.",
+    date: "2026-09-17",
+    seoTitle: "The Pitching Duel Continues | Behind the Print",
+    metaDescription:
+      "John Guest reflects on recognition, creative growth, and an evolving Fit 2 Print workflow using Lightroom, Evoto, Photoshop, and the final truth of the printed photograph.",
+    tags: [
+      "Behind The Print",
+      "Portrait Photography",
+      "Photography Workflow",
+      "Evoto",
+      "ShutterFest 2024",
+      "Fine Art Printing",
+    ],
+    image: "/blog/the-pitching-duel-continues/Briana-Thomas-hero.jpg",
+    imageAlt:
+      "Black and white portrait of model Briana Thomas reclining in an ornate chair at ShutterFest 2024",
+    imageCaption:
+      "Briana Thomas at ShutterFest 2024. The photograph connected, but the lesson went deeper than the numbers.",
+    imageCredit:
+      "Photograph by John Guest, Photography Fit 2 Print. Model: Briana Thomas (@tiraleya). Makeup artist: Refine Beauty.",
+    imageWidth: 1365,
+    imageHeight: 2048,
+    content: [
+      "I wasn’t chasing recognition with this photograph. But I’d be lying if I said I never wonder, in those quiet spaces, whether all the years of shooting, editing, printing, studying light, studying people, and studying myself are making me better. Then something like this happens. A photograph I made starts getting seen. People stop. They look. They respond. I didn’t build a campaign around it or try to manufacture a moment. The photograph simply connected.",
+      {
+        type: "image",
+        src: "/blog/the-pitching-duel-continues/Bri-instagram.png",
+        alt: "Instagram notification celebrating more than 500 views and 944 views for John Guest’s black and white portrait of Briana Thomas",
+        caption:
+          "Recognition I wasn’t seeking outright, but maybe hoping for in those quiet spaces where I wonder.",
+        credit: "Instagram recognition screenshot provided by Photography Fit 2 Print.",
+        width: 941,
+        height: 2048,
+      },
+      "That feels like evidence of honed skill. And maybe I shot my shot. The funny thing is, I’ve had more shots like this lately. Enough that I’m beginning to realize the next evolution isn’t only about making better photographs. It’s also about becoming more disciplined with what happens after I press the shutter.",
+      "I get excited by the home runs. I see a frame that hits and I want to run straight toward the finish line. But craftsmanship lives in the rest of the game too. Sometimes it’s a real head-to-head matchup, working deep into the pitch count and refusing to swing just because something is there.",
+      "That means slowing down and attacking every megapixel with purpose. Looking at the transitions in the skin. The highlights. The shadows. Every instance of digital noise. The small distractions that may not matter on a phone but suddenly become very real when an image gets larger. More importantly, it means deciding what actually needs correcting and what deserves to remain exactly as it is. That distinction matters to me, especially when I’m photographing people.",
+      "Lightroom is still where I establish the photograph: exposure, tone, color, composition, and the overall intent of the frame. Evoto has become another part of that refinement process. I use it for targeted skin work, localized corrections, cleanup, and some of the repetitive technical work that can pull attention away from the photograph itself. The software is powerful, but that doesn’t mean every slider needs to move. My responsibility is still to recognize the person in front of me and preserve what makes them unmistakably themselves.",
+      "Photoshop gets called when the photograph needs surgery instead of medicine. And ultimately, the print tells me the truth. A photograph can look beautiful glowing from a screen and still expose every weak decision once it becomes ink on paper. That’s one reason printing remains part of my process. It forces me to look harder. It makes me accountable for the entire photograph rather than just the version somebody scrolls past online.",
+      "This photograph of Briana Thomas was created during ShutterFest 2024 on April 4, 2024. Briana brought the presence. Refine Beauty handled the makeup artistry. I had the privilege of deciding where to put the light, when to press the shutter, and later, how far to take the photograph without taking anything away from the woman who made the frame work in the first place.",
+      "So yes, I’m enjoying the love and the shine. But I’m paying even more attention to what it’s teaching me. I’m giving myself the space to grow.",
+      ">> The pitching duel continues.",
+      "Model: Briana Thomas / Instagram: [@tiraleya](https://www.instagram.com/tiraleya/) / Makeup Artist: Refine Beauty / Event: ShutterFest 2024 / Photographed: April 4, 2024",
+      ">>> Fit to capture. Fit to curate. Fit to print.",
+    ],
+  },
+  {
     slug: "see-it-in-color-before-you-kill-the-color",
     title: "See It in Color Before You Kill the Color",
     excerpt:
