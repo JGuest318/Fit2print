@@ -15,8 +15,7 @@ const included = [
   "Three distinct looks shaped through clothing, styling, mood, lighting, and expression",
   "A clean, safe, intentionally prepared location with a private place to change",
   "Bottled water and simple hospitality where practical",
-  "A carefully curated, professionally finished high-resolution digital collection",
-  "Three Platinum Edition signature images receiving PF2P's highest finishing attention",
+  "A carefully curated digital collection of 60 professionally finished, high-resolution JPEG files, along with three Platinum Edition numbered signature digital editions",
 ];
 
 export default function Services() {
