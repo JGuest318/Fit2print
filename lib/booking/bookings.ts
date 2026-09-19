@@ -8,8 +8,34 @@ const HOLD_MINUTES = 30;
 const RETAINER_CENTS = 30000;
 const BALANCE_CENTS = 69500;
 
+export type BookingStatus = "pending_approval" | "held" | "confirmed" | "paid_in_full" | "cancelled" | "expired";
+export type PaymentStatus = "unpaid" | "pending" | "paid" | "failed" | "refunded";
+
+export type Booking = {
+  id: string;
+  inquiry_id: string;
+  session_date: string;
+  status: BookingStatus;
+  hold_token: string | null;
+  hold_expires_at: string | null;
+  agreement_accepted_at: string | null;
+  promo_use_permission: boolean;
+  retainer_amount_cents: number;
+  retainer_checkout_session_id: string | null;
+  retainer_payment_status: PaymentStatus;
+  balance_amount_cents: number;
+  balance_checkout_session_id: string | null;
+  balance_payment_status: PaymentStatus;
+  cancelled_at: string | null;
+  cancellation_reason: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+type ApprovedBooking = { id: string; hold_token: string; hold_expires_at: string };
+
 // Owner explicitly opens a date before it can ever be approved for a client.
-export async function openAvailability(query: Query, sessionDate: string) {
+export async function openAvailability(query: Query, sessionDate: string): Promise<void> {
   await query(
     `INSERT INTO pf2p_availability (session_date, status) VALUES ($1, 'open')
      ON CONFLICT (session_date) DO UPDATE SET status = 'open', updated_at = now()`,
@@ -17,7 +43,7 @@ export async function openAvailability(query: Query, sessionDate: string) {
   );
 }
 
-export async function closeAvailability(query: Query, sessionDate: string) {
+export async function closeAvailability(query: Query, sessionDate: string): Promise<void> {
   await query(
     `INSERT INTO pf2p_availability (session_date, status) VALUES ($1, 'closed')
      ON CONFLICT (session_date) DO UPDATE SET status = 'closed', updated_at = now()`,
@@ -25,16 +51,15 @@ export async function closeAvailability(query: Query, sessionDate: string) {
   );
 }
 
-export async function listAvailability(query: Query) {
-  return query(
-    `SELECT session_date, status FROM pf2p_availability ORDER BY session_date`,
-  );
+export async function listAvailability(query: Query): Promise<Array<{ session_date: string; status: string }>> {
+  const rows = await query(`SELECT session_date, status FROM pf2p_availability ORDER BY session_date`);
+  return rows as Array<{ session_date: string; status: string }>;
 }
 
 // Owner approves an inquiry against an owner-opened date. Creates a HELD booking
 // with a 30-minute window. The unique index on (session_date) for active statuses
 // makes double-booking impossible at the database layer, not just in application code.
-export async function approveBooking(query: Query, inquiryId: string, sessionDate: string) {
+export async function approveBooking(query: Query, inquiryId: string, sessionDate: string): Promise<ApprovedBooking> {
   const available = await query(
     `SELECT 1 FROM pf2p_availability WHERE session_date = $1 AND status = 'open'`,
     [sessionDate],
@@ -42,8 +67,9 @@ export async function approveBooking(query: Query, inquiryId: string, sessionDat
   if (!available.length) throw new DateUnavailable();
 
   const holdToken = randomUUID();
+  let rows: Record<string, unknown>[];
   try {
-    const rows = await query(
+    rows = await query(
       `INSERT INTO pf2p_bookings
          (inquiry_id, session_date, status, hold_token, hold_expires_at,
           retainer_amount_cents, balance_amount_cents)
@@ -51,20 +77,22 @@ export async function approveBooking(query: Query, inquiryId: string, sessionDat
        RETURNING id, hold_token, hold_expires_at`,
       [inquiryId, sessionDate, holdToken, RETAINER_CENTS, BALANCE_CENTS],
     );
-    return rows[0];
-  } catch (error) {
+  } catch {
     // Unique violation on the active-date index means another booking already holds this date.
     throw new DateUnavailable();
   }
+  if (!rows.length) throw new DateUnavailable();
+  const row = rows[0];
+  return { id: String(row.id), hold_token: String(row.hold_token), hold_expires_at: String(row.hold_expires_at) };
 }
 
-export async function getBooking(query: Query, bookingId: string) {
+export async function getBooking(query: Query, bookingId: string): Promise<Booking> {
   const rows = await query(`SELECT * FROM pf2p_bookings WHERE id = $1`, [bookingId]);
   if (!rows.length) throw new BookingNotFound();
-  return rows[0];
+  return rows[0] as unknown as Booking;
 }
 
-export async function recordAgreementAcceptance(query: Query, bookingId: string, promoPermission: boolean) {
+export async function recordAgreementAcceptance(query: Query, bookingId: string, promoPermission: boolean): Promise<void> {
   await query(
     `UPDATE pf2p_bookings SET agreement_accepted_at = now(), promo_use_permission = $2
      WHERE id = $1 AND status = 'held'`,
@@ -72,7 +100,7 @@ export async function recordAgreementAcceptance(query: Query, bookingId: string,
   );
 }
 
-export async function attachRetainerCheckout(query: Query, bookingId: string, checkoutSessionId: string) {
+export async function attachRetainerCheckout(query: Query, bookingId: string, checkoutSessionId: string): Promise<void> {
   await query(
     `UPDATE pf2p_bookings SET retainer_checkout_session_id = $2, retainer_payment_status = 'pending'
      WHERE id = $1 AND status = 'held'`,
@@ -80,7 +108,7 @@ export async function attachRetainerCheckout(query: Query, bookingId: string, ch
   );
 }
 
-export async function attachBalanceCheckout(query: Query, bookingId: string, checkoutSessionId: string) {
+export async function attachBalanceCheckout(query: Query, bookingId: string, checkoutSessionId: string): Promise<void> {
   await query(
     `UPDATE pf2p_bookings SET balance_checkout_session_id = $2, balance_payment_status = 'pending'
      WHERE id = $1 AND status = 'confirmed'`,
@@ -90,7 +118,7 @@ export async function attachBalanceCheckout(query: Query, bookingId: string, che
 
 // Idempotent: records the Stripe event id first; if already seen, returns false
 // and the caller should skip processing (protects against Stripe's webhook retries).
-export async function recordStripeEventOnce(query: Query, eventId: string, eventType: string) {
+export async function recordStripeEventOnce(query: Query, eventId: string, eventType: string): Promise<boolean> {
   const rows = await query(
     `INSERT INTO pf2p_stripe_events (event_id, event_type) VALUES ($1, $2)
      ON CONFLICT (event_id) DO NOTHING RETURNING event_id`,
@@ -99,7 +127,7 @@ export async function recordStripeEventOnce(query: Query, eventId: string, event
   return rows.length > 0;
 }
 
-export async function markRetainerPaid(query: Query, checkoutSessionId: string) {
+export async function markRetainerPaid(query: Query, checkoutSessionId: string): Promise<void> {
   await query(
     `UPDATE pf2p_bookings SET retainer_payment_status = 'paid', status = 'confirmed', updated_at = now()
      WHERE retainer_checkout_session_id = $1 AND status = 'held'`,
@@ -107,7 +135,7 @@ export async function markRetainerPaid(query: Query, checkoutSessionId: string) 
   );
 }
 
-export async function markBalancePaid(query: Query, checkoutSessionId: string) {
+export async function markBalancePaid(query: Query, checkoutSessionId: string): Promise<void> {
   await query(
     `UPDATE pf2p_bookings SET balance_payment_status = 'paid', status = 'paid_in_full', updated_at = now()
      WHERE balance_checkout_session_id = $1 AND status = 'confirmed'`,
@@ -115,16 +143,16 @@ export async function markBalancePaid(query: Query, checkoutSessionId: string) {
   );
 }
 
-export async function expireStaleHolds(query: Query) {
+export async function expireStaleHolds(query: Query): Promise<Array<{ id: string; session_date: string }>> {
   const rows = await query(
     `UPDATE pf2p_bookings SET status = 'expired', updated_at = now()
      WHERE status = 'held' AND hold_expires_at < now()
      RETURNING id, session_date`,
   );
-  return rows;
+  return rows as Array<{ id: string; session_date: string }>;
 }
 
-export async function cancelBooking(query: Query, bookingId: string, reason: string) {
+export async function cancelBooking(query: Query, bookingId: string, reason: string): Promise<void> {
   await query(
     `UPDATE pf2p_bookings SET status = 'cancelled', cancelled_at = now(),
        cancellation_reason = $2, updated_at = now()
