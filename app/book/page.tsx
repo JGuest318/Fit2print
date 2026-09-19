@@ -47,7 +47,7 @@ export default function BookPage() {
               <li><strong className="text-white">01. Choose a session time.</strong><br />You request from PF2P availability. Your time is not confirmed until the required reservation retainer succeeds.</li>
               <li><strong className="text-white">02. We talk.</strong><br />A FaceTime or phone consultation covers what you want the photographs to feel like, wardrobe, location, comfort, and the three looks we will create.</li>
               <li><strong className="text-white">03. We create.</strong><br />Your session is intentionally prepared, with room to change, settle in, and make photographs without rushing through a checklist.</li>
-              <li><strong className="text-white">04. We curate.</strong><br />PF2P professionally finishes a carefully selected high-resolution digital collection, including three Platinum Edition signature images.</li>
+              <li><strong className="text-white">04. We curate.</strong><br />A carefully curated digital collection of 60 professionally finished, high-resolution JPEG files, along with three Platinum Edition numbered signature digital editions.</li>
             </ol>
 
             <div className="mt-10 border border-white/10 p-6">
