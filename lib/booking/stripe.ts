@@ -26,7 +26,10 @@ export async function createCheckoutSession(opts: {
   if (!secretKey) throw new Error("stripe_not_configured");
   const body = formEncode({
     mode: "payment",
-    "automatic_payment_methods[enabled]": "true",
+    // 'card' is the only method type requested. Apple Pay (and Google Pay) render
+    // automatically as a wallet option within 'card' on supporting devices/browsers
+    // — no separate parameter is needed or accepted by Checkout Sessions for this.
+    "payment_method_types[0]": "card",
     "line_items[0][price_data][currency]": "usd",
     "line_items[0][price_data][unit_amount]": opts.amountCents,
     "line_items[0][price_data][product_data][name]": opts.productName,
