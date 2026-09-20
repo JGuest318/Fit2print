@@ -5,6 +5,11 @@ import { AgreementForm } from "./agreement-form";
 
 export const dynamic = "force-dynamic";
 
+function formatSessionDate(value: unknown): string {
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  return String(value);
+}
+
 export default async function AgreementPage({ params }: { params: Promise<{ bookingId: string }> }) {
   const { bookingId } = await params;
   const providers = getBookingProviders();
@@ -41,8 +46,8 @@ export default async function AgreementPage({ params }: { params: Promise<{ book
           <p className="section-label mb-4">Photography Fit 2 Print</p>
           <h1 className="hero-heading max-w-2xl text-4xl text-white md:text-5xl">Your Bespoke Experience Agreement</h1>
           <p className="mt-4 text-sm text-white/50">
-            Session date: <span className="text-white">{booking.session_date}</span>. Please read the terms below before
-            continuing to the reservation retainer.
+            Session date: <span className="text-white">{formatSessionDate(booking.session_date)}</span>. Please read the
+            terms below before continuing to the reservation retainer.
           </p>
 
           <pre className="mt-10 whitespace-pre-wrap border border-white/10 bg-white/[0.025] p-6 text-sm leading-relaxed text-white/70 font-sans">
