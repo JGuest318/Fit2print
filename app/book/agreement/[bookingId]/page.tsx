@@ -1,5 +1,5 @@
 import { getBookingProviders } from "@/lib/booking/providers";
-import { getBooking, BookingNotFound } from "@/lib/booking/bookings";
+import { getBookingFresh, BookingNotFound } from "@/lib/booking/bookings";
 import { AGREEMENT_TEXT } from "@/lib/booking/agreement";
 import { AgreementForm } from "./agreement-form";
 
@@ -19,7 +19,7 @@ export default async function AgreementPage({ params }: { params: Promise<{ book
   }
 
   try {
-    const booking = await getBooking(providers.query, bookingId);
+    const booking = await getBookingFresh(providers.query, bookingId);
 
     if (booking.agreement_accepted_at) {
       return (
