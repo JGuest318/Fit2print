@@ -5,6 +5,7 @@ export class DateUnavailable extends Error {}
 export class BookingNotFound extends Error {}
 export class AgreementNotAcceptable extends Error {}
 export class HoldExpiredError extends Error {}
+export class RescheduleTargetUnavailable extends Error {}
 
 const HOLD_MINUTES = 30;
 const RETAINER_CENTS = 30000;
@@ -61,10 +62,6 @@ export async function listAvailability(query: Query): Promise<Array<{ session_da
   return rows as Array<{ session_date: string; status: string }>;
 }
 
-// Self-heals any stale held booking on a given date. Called at every stage of the
-// flow (approval, agreement acceptance, retainer checkout) so correctness never
-// depends on the external hold-expiry scheduler's timing. expireStaleHolds (below)
-// is the global sweep the scheduler calls; this is the same logic scoped to one date.
 async function expireIfStale(query: Query, sessionDate: string): Promise<void> {
   await query(
     `UPDATE pf2p_bookings SET status = 'expired', updated_at = now()
@@ -73,9 +70,6 @@ async function expireIfStale(query: Query, sessionDate: string): Promise<void> {
   );
 }
 
-// Global sweep: releases every stale held booking, regardless of date. Used by the
-// scheduled worker as a cleanup/reporting convenience — correctness never depends on
-// this actually running promptly, because every user-facing stage self-heals inline.
 export async function expireStaleHolds(query: Query): Promise<Array<{ id: string; session_date: string }>> {
   const rows = await query(
     `UPDATE pf2p_bookings SET status = 'expired', updated_at = now()
@@ -119,9 +113,6 @@ export async function getBooking(query: Query, bookingId: string): Promise<Booki
   return rows[0] as unknown as Booking;
 }
 
-// Fetches the booking after first self-healing it if its hold has silently expired.
-// Every stage that gates on status = 'held' should call this rather than getBooking
-// directly, so an unswept expiry can never be mistaken for an active hold.
 export async function getBookingFresh(query: Query, bookingId: string): Promise<Booking> {
   const existing = await getBooking(query, bookingId);
   if (existing.status === "held" && existing.hold_expires_at && new Date(existing.hold_expires_at) < new Date()) {
@@ -131,11 +122,6 @@ export async function getBookingFresh(query: Query, bookingId: string): Promise<
   return existing;
 }
 
-// Requires explicit agreement (agree=true) to record acceptance at all. Promotional-use
-// permission is a fully independent boolean — never inferred from general acceptance.
-// Records the exact agreement version and text hash so later wording changes can never
-// retroactively alter what this client is understood to have accepted. Independently
-// enforces the hold expiry — does not rely on the approval-time self-heal alone.
 export async function recordAgreementAcceptance(
   query: Query,
   bookingId: string,
@@ -166,55 +152,60 @@ export async function cancelBooking(query: Query, bookingId: string, reason: str
   );
 }
 
-export class RescheduleTargetUnavailable extends Error {}
-
-// A paid reschedule must carry the existing payment credit forward — the client must
-// never be asked for another retainer just because the date changed. Creates a NEW
-// booking row for the new date (self-healing that date first), copies over the paid
-// status from the original, links the two via rescheduled_from_booking_id, and
-// cancels the original with reason 'rescheduled'.
-export async function rescheduleBooking(query: Query, originalBookingId: string, newSessionDate: string): Promise<{ newBookingId: string }> {
-  const original = await getBookingFresh(query, originalBookingId);
-  if (original.status !== "confirmed" && original.status !== "paid_in_full") {
-    throw new RescheduleTargetUnavailable();
-  }
-
-  await expireIfStale(query, newSessionDate);
-  const available = await query(
-    `SELECT 1 FROM pf2p_availability WHERE session_date = $1 AND status = 'open'`,
-    [newSessionDate],
-  );
-  if (!available.length) throw new RescheduleTargetUnavailable();
-
-  let rows: Record<string, unknown>[];
-  try {
-    rows = await query(
-      `INSERT INTO pf2p_bookings
+// A paid reschedule must carry the existing payment credit forward, and must be safe
+// under concurrency: two simultaneous reschedule requests for the SAME original booking
+// (even targeting different new dates) must not both succeed and duplicate the credit.
+//
+// This runs as ONE atomic statement. `FOR UPDATE` locks the original booking row for the
+// duration of the transaction, so a second concurrent call on the same original blocks
+// until the first commits — it then re-reads the row fresh and correctly finds it already
+// cancelled (no longer confirmed/paid_in_full), so it does nothing rather than creating a
+// second replacement. A failure (target date unavailable) leaves the original untouched,
+// because the whole statement is one transaction that rolls back cleanly on no-op.
+export async function rescheduleBooking(query: Query, originalBookingId: string, newSessionDate: string): Promise<{ newBookingId: string | null }> {
+  const rows = await query(
+    `WITH locked_original AS (
+       SELECT * FROM pf2p_bookings WHERE id = $1 AND status IN ('confirmed', 'paid_in_full') FOR UPDATE
+     ),
+     expire_stale_target AS (
+       UPDATE pf2p_bookings SET status = 'expired', updated_at = now()
+       WHERE session_date = $2 AND status = 'held' AND hold_expires_at < now()
+       RETURNING 1
+     ),
+     target_eligible AS (
+       SELECT 1
+       WHERE EXISTS (SELECT 1 FROM pf2p_availability WHERE session_date = $2 AND status = 'open')
+         AND NOT EXISTS (SELECT 1 FROM pf2p_bookings WHERE session_date = $2 AND status IN ('held', 'confirmed', 'paid_in_full'))
+         -- forces this CTE to run after expire_stale_target so a just-expired target date counts as free
+         AND NOT EXISTS (SELECT 1 FROM expire_stale_target WHERE false)
+     ),
+     cancel_original AS (
+       UPDATE pf2p_bookings SET status = 'cancelled', cancelled_at = now(),
+         cancellation_reason = 'rescheduled', updated_at = now()
+       WHERE id = (SELECT id FROM locked_original)
+         AND EXISTS (SELECT 1 FROM locked_original)
+         AND EXISTS (SELECT 1 FROM target_eligible)
+       RETURNING *
+     ),
+     new_booking AS (
+       INSERT INTO pf2p_bookings
          (inquiry_id, session_date, status, agreement_accepted_at, agreement_version, agreement_text_hash,
           promo_use_permission, retainer_amount_cents, retainer_payment_status,
           balance_amount_cents, balance_payment_status, rescheduled_from_booking_id)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-       RETURNING id`,
-      [
-        original.inquiry_id,
-        newSessionDate,
-        original.status,
-        original.agreement_accepted_at,
-        original.agreement_version,
-        original.agreement_text_hash,
-        original.promo_use_permission,
-        original.retainer_amount_cents,
-        original.retainer_payment_status,
-        original.balance_amount_cents,
-        original.balance_payment_status,
-        originalBookingId,
-      ],
-    );
-  } catch {
+       SELECT inquiry_id, $2, status, agreement_accepted_at, agreement_version, agreement_text_hash,
+              promo_use_permission, retainer_amount_cents, retainer_payment_status,
+              balance_amount_cents, balance_payment_status, id
+       FROM cancel_original
+       RETURNING id
+     )
+     SELECT (SELECT id FROM new_booking) AS new_booking_id,
+            (SELECT count(*) FROM locked_original) AS original_found,
+            (SELECT count(*) FROM target_eligible) AS target_was_eligible`,
+    [originalBookingId, newSessionDate],
+  );
+  const row = rows[0] as { new_booking_id: string | null; original_found: string; target_was_eligible: string } | undefined;
+  if (!row || Number(row.original_found) === 0 || Number(row.target_was_eligible) === 0 || !row.new_booking_id) {
     throw new RescheduleTargetUnavailable();
   }
-  if (!rows.length) throw new RescheduleTargetUnavailable();
-
-  await cancelBooking(query, originalBookingId, "rescheduled");
-  return { newBookingId: String(rows[0].id) };
+  return { newBookingId: row.new_booking_id };
 }
