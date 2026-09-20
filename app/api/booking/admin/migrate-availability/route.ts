@@ -5,8 +5,6 @@ import { NextResponse } from "next/server";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-// Idempotent (all statements are IF NOT EXISTS / CREATE OR REPLACE style).
-// Safe to call more than once. Auth-gated the same way as the retry worker.
 const STATEMENTS = [
   `CREATE TABLE IF NOT EXISTS pf2p_availability (
     session_date date PRIMARY KEY,
@@ -51,15 +49,8 @@ const STATEMENTS = [
   )`,
   `ALTER TABLE pf2p_bookings ADD COLUMN IF NOT EXISTS agreement_version text`,
   `ALTER TABLE pf2p_bookings ADD COLUMN IF NOT EXISTS agreement_text_hash text`,
-  // Reschedule lineage: a rescheduled booking is a NEW row that carries the paid
-  // credit forward; this links it back to the booking it replaced.
   `ALTER TABLE pf2p_bookings ADD COLUMN IF NOT EXISTS rescheduled_from_booking_id uuid REFERENCES pf2p_bookings(id)`,
-  // Flag for payments that arrived but could not be safely auto-confirmed
-  // (expired hold, date taken by someone else, amount/currency/mode mismatch).
   `ALTER TABLE pf2p_bookings ADD COLUMN IF NOT EXISTS needs_resolution boolean NOT NULL DEFAULT false`,
-  // Full history of every Checkout session ever created for a booking, so a payment
-  // on an older (non-"current") session is still reconciled correctly, and repeated
-  // visits to a pay link reuse an active session instead of minting a new one.
   `CREATE TABLE IF NOT EXISTS pf2p_payment_attempts (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     booking_id uuid NOT NULL REFERENCES pf2p_bookings(id),
@@ -76,16 +67,25 @@ const STATEMENTS = [
     expires_at timestamptz NOT NULL
   )`,
   `CREATE INDEX IF NOT EXISTS pf2p_payment_attempts_booking_idx ON pf2p_payment_attempts (booking_id, payment_type)`,
-  `CREATE INDEX IF NOT EXISTS pf2p_payment_attempts_active_idx ON pf2p_payment_attempts (booking_id, payment_type, status) WHERE status = 'created'`,
-  // Manual refund ledger for V1: not wired to Stripe's refund API automatically,
-  // but gives a clear, queryable record of what was owed, refunded, and resolved.
+  // Concurrency safety: only ONE 'created' (in-flight or active) attempt may exist per
+  // booking+payment_type at a time. Two simultaneous pay-link visits racing to create a
+  // session will have one INSERT succeed and one fail on this constraint — the loser
+  // then re-reads and reuses the winner's row instead of creating a second session.
+  `CREATE UNIQUE INDEX IF NOT EXISTS pf2p_payment_attempts_one_active_uidx
+    ON pf2p_payment_attempts (booking_id, payment_type) WHERE status = 'created'`,
   `CREATE TABLE IF NOT EXISTS pf2p_refund_records (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     booking_id uuid NOT NULL REFERENCES pf2p_bookings(id),
     amount_cents integer NOT NULL,
     reason text NOT NULL,
-    recorded_at timestamptz NOT NULL DEFAULT now()
+    status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'failed')),
+    reference text,
+    recorded_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now()
   )`,
+  `ALTER TABLE pf2p_refund_records ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'pending'`,
+  `ALTER TABLE pf2p_refund_records ADD COLUMN IF NOT EXISTS reference text`,
+  `ALTER TABLE pf2p_refund_records ADD COLUMN IF NOT EXISTS updated_at timestamptz NOT NULL DEFAULT now()`,
 ];
 
 export async function POST(request: Request) {
