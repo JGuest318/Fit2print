@@ -21,6 +21,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ book
     return NextResponse.json({ error: "This reservation is no longer available to pay (expired, already confirmed, or cancelled)." }, { status: 409 });
   }
   const origin = new URL(request.url).origin;
+  if (!booking.agreement_accepted_at) {
+    return NextResponse.redirect(`${origin}/book/agreement/${bookingId}`, { status: 307 });
+  }
   try {
     const session = await createCheckoutSession({
       amountCents: booking.retainer_amount_cents,
