@@ -38,22 +38,28 @@ includes:
 - Package wording and pricing: **unchanged from John's approved wording** — this
   document does not alter it.
 
-## What is reported versus independently verified
+## Implementer verification versus independent code review
 
-This distinction matters and is kept explicit throughout this document and the PR:
+These are two different kinds of evidence and are labeled as such throughout this
+document and the PR, rather than blended together:
 
-- **Independently verified by Magica in this environment**: the concurrency proofs
-  (simultaneous Checkout-session creation, simultaneous reschedule, payment-vs-
-  cancellation race), the migration-sequence fix (below), the app-level auth checks
-  against the deployed preview build (401 without a valid worker/cron token, 200 with
-  one), and the Vercel deployment/build state.
-- **Reported by an external review, not independently replayed by Magica**: the
-  specific claim that `accepted: 18` in an earlier response proves a particular GET
-  request "recovered 18 messages." That number is the **total count of inquiry rows
-  currently in `accepted` status in the database** — it reflects the cumulative state
-  of the table, not the delta caused by that one request. No claim to the contrary
-  should be read into that earlier report.
-- **Not yet verified by anyone**: live, scheduled (as opposed to manually invoked)
+- **Implementer verification (Magica's own tests, run in this environment):** the
+  concurrency proofs (simultaneous Checkout-session creation, simultaneous reschedule,
+  payment-vs-cancellation race), the migration-sequence fix and its PGlite schema
+  comparison, the app-level auth checks against the deployed preview build (401
+  without a valid worker/cron token, 200 with one), the worker-secret rotation
+  verification (below), and the Vercel deployment/build state. John has not replayed
+  these independently; they are reported as implementer-verified evidence, not
+  externally confirmed.
+- **Independent code review (John's checks):** the specific finding that the earlier
+  duplicate-numbered `002` migration file was defective, and the correction below to
+  a prior evidence claim. Where this document previously attributed the "18 recovered
+  messages" reading to that review, that was inaccurate — the review explicitly
+  rejected that interpretation. Correct statement: **the response showed 18
+  previously accepted records; recovery during that invocation was not established.**
+  `accepted: 18` is the total count of inquiry rows currently in `accepted` status in
+  the database, not a delta caused by any single request.
+- **Not yet verified by anyone:** live, scheduled (as opposed to manually invoked)
   execution of the cron routes. Vercel's native Cron only invokes **Production**
   deployments, so this cannot be demonstrated on a preview branch. It is a named
   post-approval release check (below), not something this document claims is done.
@@ -73,8 +79,9 @@ Three versioned, uniquely-numbered files, applied in order and tracked in a
    `CREATE TABLE IF NOT EXISTS`, which is what caused the earlier defect — see below),
    plus `pf2p_payment_attempts` and `pf2p_refund_records`.
 
-**Defect found and fixed:** an earlier duplicate-numbered `002_booking_availability_and_payments.sql`
-used `CREATE TABLE IF NOT EXISTS` for `pf2p_bookings`, which silently no-ops against an
+**Defect found and fixed (identified by independent code review):** an earlier
+duplicate-numbered `002_booking_availability_and_payments.sql` used
+`CREATE TABLE IF NOT EXISTS` for `pf2p_bookings`, which silently no-ops against an
 already-existing table — it would never have added the new columns to a database that
 had already run the original `002`. Separately, running that file alone against an
 empty database would fail because it references `pf2p_inquiries`, which only `001`
@@ -85,7 +92,7 @@ creates a `pf2p_schema_migrations` tracking table, reads every `*.sql` file in
 `db/migrations/` in filename order, and applies only the ones not yet recorded as
 applied — each migration's DDL and its tracking row commit together in one transaction.
 
-**Independently verified (sandbox, PGlite, not the production database):**
+**Implementer verification (sandbox, PGlite, not the production database):**
 - Applying `001` → `002` → `003` to an **empty database** and applying `001` → `002`
   (representing a database that already had the earlier, pre-`003` schema) → `003`
   alone produce **byte-identical final schemas** (same columns, types, nullability,
@@ -115,14 +122,24 @@ loaded server-side.
   into this branch specifically so its removal takes effect when this PR merges. It
   was empirically unreliable (7 runs total observed, gaps of several hours) and is
   fully superseded by native Cron.
-- **cron-job.org**: retirement could not be completed by Magica. There is no connected
-  API/integration available for that service in this environment, and reaching its
-  dashboard would require signing into an account Magica has no credentials for —
-  which is explicitly outside what Magica will attempt (no password entry, no
-  credential requests). This is a specific access block, not a task left for John to
-  troubleshoot: if John wants that job deleted, it requires him (or someone with
-  dashboard access) to remove it; otherwise it can simply be left disabled/idle, since
-  it is no longer referenced by anything in this codebase.
+- **cron-job.org**: its current call status is **unknown**, not harmless or idle — an
+  external scheduler holding a valid credential can keep calling an endpoint
+  indefinitely with no reference to it anywhere in this repository. Rather than
+  leaving that open, the shared credential it used (`BOOKING_WORKER_SECRET`) has been
+  **rotated**. The previous value no longer authenticates against any endpoint; only
+  the new value does. This neutralizes cron-job.org's access without requiring anyone
+  to sign into its dashboard. Verified (implementer verification): after rotation, the
+  new `BOOKING_WORKER_SECRET` value returns `200` from both
+  `/api/booking/notifications/retry` and `/api/booking/admin/expire-holds`, and an
+  arbitrary non-matching token (standing in for any credential other than the current
+  one, including whatever cron-job.org held) returns `401`. Magica never had the
+  literal old secret value in this session to test byte-for-byte, but rotation's
+  guarantee — only the current stored value authenticates — was directly exercised
+  and holds. The two GitHub repository secrets that existed solely for the now-deleted
+  workflow (`BOOKING_WORKER_SECRET`, `BOOKING_VERCEL_BYPASS`) have also been deleted
+  as orphaned credentials. If John wants the cron-job.org job entry itself removed
+  from that dashboard (rather than just neutralized), that still requires someone
+  with login access to that account — Magica has none and will not request any.
 
 ## Preview service activation (unchanged from original inquiry-only scope, still accurate)
 
@@ -140,7 +157,7 @@ mode), `STRIPE_WEBHOOK_SECRET`, and `CRON_SECRET`.
 2. Vercel native Cron now handles the 5-minute retry/expiry schedule once this reaches
    Production. Until then, rely on the on-traffic opportunistic retry described above.
 3. `npm run booking:retry` remains available for an authenticated, on-demand bounded
-   retry against the preview deployment.
+   retry against the preview deployment, using the current (rotated) worker secret.
 
 ## Release check (post-approval only — not part of this document's current scope)
 
@@ -166,8 +183,9 @@ unprotected admin page.
 conflicts, persistence through restart, queued email failure, retry keys, expired
 leases, rate limits, worker authentication). These are local tests, not proof of a
 live provisioned service. Separately, sandbox concurrency tests (documented in the PR)
-independently exercised real simultaneous requests against the deployed preview
-build for the payment/reschedule concurrency guarantees described above.
+are implementer verification: real simultaneous requests exercised against the
+deployed preview build for the payment/reschedule concurrency guarantees described
+above. They have not been independently replayed by John.
 
 Provider references: [Neon driver](https://github.com/neondatabase/serverless),
 [Resend send API](https://resend.com/docs/api-reference/emails/send-email),
