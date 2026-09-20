@@ -1,5 +1,6 @@
 import { getBookingProviders } from "@/lib/booking/providers";
 import { getAttemptBySessionId } from "@/lib/booking/payments";
+import { getBooking } from "@/lib/booking/bookings";
 import { retrieveCheckoutSession } from "@/lib/booking/stripe";
 
 export const dynamic = "force-dynamic";
@@ -9,35 +10,52 @@ export default async function ConfirmedPage({ searchParams }: { searchParams: Pr
   const providers = getBookingProviders();
 
   if (!sessionId || !providers) {
-    return <Status title="Missing reference" message="We couldn't find a payment reference for this page. If you just paid, check your email confirmation or contact Photography Fit 2 Print." />;
+    return <Status title="Missing reference" message="We couldn't find a payment reference for this page. If you just paid, check your booking status or contact Photography Fit 2 Print." />;
   }
 
   const attempt = await getAttemptBySessionId(providers.query, sessionId);
   if (!attempt) {
-    return <Status title="Payment not found" message="We couldn't match this payment to a reservation. Please contact Photography Fit 2 Print with your confirmation email." />;
+    return <Status title="Payment not found" message="We couldn't match this payment to a reservation. Please contact Photography Fit 2 Print." />;
   }
 
-  // Never trust the redirect alone — confirm the actual payment status with Stripe
-  // server-side. The webhook is the source of truth for crediting the booking; this
-  // is purely to give the client accurate, verified feedback right now.
+  // This page is specifically for the RETAINER confirmation. A balance session
+  // landing here (e.g. a stale bookmarked link) must not be shown a retainer message.
+  if (attempt.payment_type !== "retainer") {
+    return <Status title="Wrong payment step" message="This link is for the reservation retainer, but this payment was for a different step. Check your booking status or contact Photography Fit 2 Print." reference={attempt.booking_id} />;
+  }
+
+  const booking = await getBooking(providers.query, attempt.booking_id).catch(() => null);
   const liveSession = await retrieveCheckoutSession(sessionId);
+  const verificationUnavailable = liveSession === null;
   const verifiedPaid = liveSession?.payment_status === "paid";
 
-  if (attempt.status === "paid") {
+  // Only ever assert what our own booking record currently shows — never the attempt
+  // row alone, since the booking is the single source of truth after concurrent updates.
+  if (booking && booking.status !== "held" && booking.retainer_payment_status === "paid") {
     return (
       <Status
         title="Retainer received"
-        message={`Your $${(attempt.amount_cents / 100).toFixed(2)} reservation retainer has been received and your session date is confirmed. A confirmation has been sent, and you'll receive a link to pay the remaining balance on your session day.`}
+        message={`Your $${(attempt.amount_cents / 100).toFixed(2)} reservation retainer has been received and your session date is confirmed. You'll receive a link to pay the remaining balance on your session day.`}
         reference={attempt.booking_id}
       />
     );
   }
 
-  if (attempt.status === "needs_resolution") {
+  if (booking?.needs_resolution) {
     return (
       <Status
         title="We're reviewing your payment"
-        message="Your payment was received, but we need to manually confirm a detail before finalizing your booking (this can happen if the reservation window changed while you were paying). Photography Fit 2 Print will reach out shortly — your payment has not been lost."
+        message="Your payment appears to have gone through, but we need to manually confirm a detail before finalizing your booking. Photography Fit 2 Print will reach out — your payment has not been lost."
+        reference={attempt.booking_id}
+      />
+    );
+  }
+
+  if (verificationUnavailable) {
+    return (
+      <Status
+        title="Payment status unavailable right now"
+        message="We couldn't verify your payment status at this moment. This does not mean your payment failed — please check back shortly, or contact Photography Fit 2 Print if you're unsure."
         reference={attempt.booking_id}
       />
     );
@@ -47,7 +65,7 @@ export default async function ConfirmedPage({ searchParams }: { searchParams: Pr
     return (
       <Status
         title="Payment received — finalizing"
-        message="Stripe confirms your payment went through. We're finishing confirmation on our side; this usually takes a few seconds. Refresh this page shortly, or check your email for confirmation."
+        message="Stripe confirms your payment went through. We're finishing confirmation on our side; this usually takes a few seconds. Refresh this page shortly."
         reference={attempt.booking_id}
       />
     );
