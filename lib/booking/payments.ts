@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { Query } from "./inquiries";
 
 export type PaymentType = "retainer" | "balance";
@@ -15,9 +16,10 @@ export type PaymentAttempt = {
   expires_at: string;
 };
 
+export class AttemptInFlight extends Error {}
+
 // Reuse an active, unexpired Checkout session instead of minting a new one on every
-// visit to the pay link — otherwise a client who pays an older link's session would
-// get no booking credit, because the booking only remembered the newest session id.
+// visit to the pay link.
 export async function findReusableAttempt(query: Query, bookingId: string, paymentType: PaymentType): Promise<PaymentAttempt | null> {
   const rows = await query(
     `SELECT * FROM pf2p_payment_attempts
@@ -28,55 +30,78 @@ export async function findReusableAttempt(query: Query, bookingId: string, payme
   return rows.length ? (rows[0] as unknown as PaymentAttempt) : null;
 }
 
-export async function getAttemptBySessionId(query: Query, checkoutSessionId: string): Promise<PaymentAttempt | null> {
-  const rows = await query(`SELECT * FROM pf2p_payment_attempts WHERE checkout_session_id = $1`, [checkoutSessionId]);
-  return rows.length ? (rows[0] as unknown as PaymentAttempt) : null;
+// Concurrency guard for "simultaneous payment-link visits create two sessions":
+// a partial UNIQUE index on (booking_id, payment_type) WHERE status = 'created'
+// means at most one row can hold that slot. This inserts a PLACEHOLDER row (a
+// real Stripe session doesn't exist yet) to atomically claim the slot before any
+// Stripe API call is made. If another request already holds it, this throws
+// AttemptInFlight and the caller should re-read the (now-existing) row instead of
+// creating a second Stripe session.
+export async function acquireAttemptSlot(
+  query: Query,
+  bookingId: string,
+  paymentType: PaymentType,
+  livemode: boolean,
+): Promise<{ placeholderId: string; placeholderSessionId: string }> {
+  const placeholderSessionId = `pending:${randomUUID()}`;
+  try {
+    const rows = await query(
+      `INSERT INTO pf2p_payment_attempts
+         (booking_id, payment_type, checkout_session_id, checkout_url, amount_cents, currency, livemode, status, expires_at)
+       VALUES ($1, $2, $3, '', 0, 'usd', $4, 'created', now() + interval '2 minutes')
+       RETURNING id`,
+      [bookingId, paymentType, placeholderSessionId, livemode],
+    );
+    return { placeholderId: String(rows[0].id), placeholderSessionId };
+  } catch {
+    throw new AttemptInFlight();
+  }
 }
 
-export async function recordAttempt(
+export async function finalizeAttempt(
   query: Query,
-  params: {
-    bookingId: string;
-    paymentType: PaymentType;
-    checkoutSessionId: string;
-    checkoutUrl: string;
-    amountCents: number;
-    currency: string;
-    livemode: boolean;
-    expiresAt: string;
-  },
+  placeholderId: string,
+  params: { checkoutSessionId: string; checkoutUrl: string; amountCents: number; currency: string; expiresAt: string },
 ): Promise<void> {
   await query(
-    `INSERT INTO pf2p_payment_attempts
-       (booking_id, payment_type, checkout_session_id, checkout_url, amount_cents, currency, livemode, expires_at)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, to_timestamp($8))`,
+    `UPDATE pf2p_payment_attempts SET
+       checkout_session_id = $2, checkout_url = $3, amount_cents = $4, currency = $5,
+       expires_at = to_timestamp($6), updated_at = now()
+     WHERE id = $1`,
     [
-      params.bookingId,
-      params.paymentType,
+      placeholderId,
       params.checkoutSessionId,
       params.checkoutUrl,
       params.amountCents,
       params.currency,
-      params.livemode,
       Math.floor(new Date(params.expiresAt).getTime() / 1000),
     ],
   );
 }
 
+// Frees the slot if Stripe session creation failed after we claimed it, so a
+// subsequent retry isn't permanently blocked by a dead placeholder.
+export async function releaseFailedAttemptSlot(query: Query, placeholderId: string): Promise<void> {
+  await query(`DELETE FROM pf2p_payment_attempts WHERE id = $1 AND checkout_url = ''`, [placeholderId]);
+}
+
+export async function getAttemptBySessionId(query: Query, checkoutSessionId: string): Promise<PaymentAttempt | null> {
+  const rows = await query(`SELECT * FROM pf2p_payment_attempts WHERE checkout_session_id = $1`, [checkoutSessionId]);
+  return rows.length ? (rows[0] as unknown as PaymentAttempt) : null;
+}
+
+export async function getAttemptById(query: Query, id: string): Promise<PaymentAttempt | null> {
+  const rows = await query(`SELECT * FROM pf2p_payment_attempts WHERE id = $1`, [id]);
+  return rows.length ? (rows[0] as unknown as PaymentAttempt) : null;
+}
+
 export type ConfirmOutcome = "confirmed" | "duplicate_event" | "unknown_session" | "mismatch" | "stale_booking";
 
-// The single atomic operation at the heart of the payment-correctness fix.
-// Runs as ONE SQL statement (Postgres treats one statement as one implicit
-// transaction), so the event-idempotency record and the booking/attempt update
-// rise or fall together — there is no window where the event is marked "received"
-// but the booking update is lost, which was the original defect.
-//
-// Full validation happens inside the same statement: the checkout session must be
-// a known attempt, amount/currency/livemode must match exactly what we created,
-// and the booking must still be in the correct precursor state for this payment
-// type (held+not-expired for retainer, confirmed for balance). Anything that
-// doesn't satisfy all of that is marked needs_resolution rather than silently
-// dropped or blindly confirmed against a date that may no longer be available.
+// Atomic AND concurrency-safe: the booking row is read with FOR UPDATE inside the
+// same statement that later writes it, so a concurrent cancellation/reschedule on
+// the same booking cannot interleave between our read of its status and our write
+// — Postgres will block the other transaction on that row lock until this commits,
+// and it will then see our committed result rather than acting on stale data.
 export async function confirmPaymentEvent(
   query: Query,
   params: {
@@ -102,6 +127,7 @@ export async function confirmPaymentEvent(
        FROM pf2p_payment_attempts pa
        JOIN pf2p_bookings b ON b.id = pa.booking_id
        WHERE pa.checkout_session_id = $3
+       FOR UPDATE OF b
      ),
      outcome AS (
        SELECT *,
@@ -163,17 +189,31 @@ export async function confirmPaymentEvent(
   return (rows[0].result as ConfirmOutcome) ?? "duplicate_event";
 }
 
-export async function recordRefund(query: Query, bookingId: string, amountCents: number, reason: string): Promise<void> {
+export type RefundStatus = "pending" | "completed" | "failed";
+
+export async function recordRefund(
+  query: Query,
+  bookingId: string,
+  amountCents: number,
+  reason: string,
+  status: RefundStatus,
+  reference: string | null,
+): Promise<void> {
   await query(
-    `INSERT INTO pf2p_refund_records (booking_id, amount_cents, reason) VALUES ($1, $2, $3)`,
-    [bookingId, amountCents, reason],
+    `INSERT INTO pf2p_refund_records (booking_id, amount_cents, reason, status, reference)
+     VALUES ($1, $2, $3, $4, $5)`,
+    [bookingId, amountCents, reason, status, reference],
   );
 }
 
-export async function listRefunds(query: Query, bookingId: string): Promise<Array<{ amount_cents: number; reason: string; recorded_at: string }>> {
+export async function updateRefundStatus(query: Query, refundId: string, status: RefundStatus): Promise<void> {
+  await query(`UPDATE pf2p_refund_records SET status = $2, updated_at = now() WHERE id = $1`, [refundId, status]);
+}
+
+export async function listRefunds(query: Query, bookingId: string): Promise<Array<{ id: string; amount_cents: number; reason: string; status: RefundStatus; reference: string | null; recorded_at: string }>> {
   const rows = await query(
-    `SELECT amount_cents, reason, recorded_at FROM pf2p_refund_records WHERE booking_id = $1 ORDER BY recorded_at`,
+    `SELECT id, amount_cents, reason, status, reference, recorded_at FROM pf2p_refund_records WHERE booking_id = $1 ORDER BY recorded_at`,
     [bookingId],
   );
-  return rows as Array<{ amount_cents: number; reason: string; recorded_at: string }>;
+  return rows as Array<{ id: string; amount_cents: number; reason: string; status: RefundStatus; reference: string | null; recorded_at: string }>;
 }
