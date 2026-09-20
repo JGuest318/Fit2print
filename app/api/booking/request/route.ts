@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createHmac } from "node:crypto";
 import { getBookingProviders } from "@/lib/booking/providers";
-import { deliverNotification, InquiryConflict, InquiryRateLimit, saveInquiry } from "@/lib/booking/inquiries";
+import { deliverNotification, InquiryConflict, InquiryRateLimit, saveInquiry, retryNotifications } from "@/lib/booking/inquiries";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -74,6 +74,10 @@ export async function POST(request: Request) {
     }, providers.from, bucket);
     // Storage has committed. Email failure must not undo receipt or cause a new inquiry.
     try { await deliverNotification(providers.query, providers.send, id); } catch { /* durable outbox retries */ }
+    // Opportunistic recovery: also sweep any other pending notifications on real traffic,
+    // so delivery doesn't depend solely on the external scheduler's timing. Best-effort;
+    // failures here never affect this request's own response.
+    try { await retryNotifications(providers.query, providers.send); } catch { /* scheduler still covers this */ }
     return NextResponse.json({ success: true, inquiryId: id, bookingStatus: "INQUIRY", paymentStatus: "UNPAID" },
       { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
