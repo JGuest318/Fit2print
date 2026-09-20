@@ -29,14 +29,12 @@ export async function createCheckoutSession(opts: {
   successUrl: string;
   cancelUrl: string;
   expiresInSeconds?: number;
+  idempotencyKey: string;
 }): Promise<CheckoutSession> {
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) throw new Error("stripe_not_configured");
   const body = formEncode({
     mode: "payment",
-    // 'card' is the only method type requested. Apple Pay (and Google Pay) render
-    // automatically as a wallet option within 'card' on supporting devices/browsers
-    // — no separate parameter is needed or accepted by Checkout Sessions for this.
     "payment_method_types[0]": "card",
     "line_items[0][price_data][currency]": "usd",
     "line_items[0][price_data][unit_amount]": opts.amountCents,
@@ -50,7 +48,14 @@ export async function createCheckoutSession(opts: {
   });
   const response = await fetch(`${STRIPE_API}/checkout/sessions`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${secretKey}`, "Content-Type": "application/x-www-form-urlencoded" },
+    headers: {
+      Authorization: `Bearer ${secretKey}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+      // Guards against duplicate Stripe-side sessions if our own request is retried
+      // after a timeout (e.g. a serverless function retry) — Stripe returns the same
+      // session object for a repeated call with the same key within its 24h window.
+      "Idempotency-Key": opts.idempotencyKey,
+    },
     body,
     signal: AbortSignal.timeout(10000),
   });
@@ -70,19 +75,25 @@ export async function createCheckoutSession(opts: {
 export async function retrieveCheckoutSession(sessionId: string): Promise<{ id: string; payment_status: string; amount_total: number | null; currency: string | null; livemode: boolean } | null> {
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) return null;
-  const response = await fetch(`${STRIPE_API}/checkout/sessions/${encodeURIComponent(sessionId)}`, {
-    headers: { Authorization: `Bearer ${secretKey}` },
-    signal: AbortSignal.timeout(10000),
-  });
-  if (!response.ok) return null;
-  const result = await response.json();
-  return {
-    id: result.id,
-    payment_status: result.payment_status,
-    amount_total: typeof result.amount_total === "number" ? result.amount_total : null,
-    currency: result.currency ?? null,
-    livemode: Boolean(result.livemode),
-  };
+  try {
+    const response = await fetch(`${STRIPE_API}/checkout/sessions/${encodeURIComponent(sessionId)}`, {
+      headers: { Authorization: `Bearer ${secretKey}` },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!response.ok) return null;
+    const result = await response.json();
+    return {
+      id: result.id,
+      payment_status: result.payment_status,
+      amount_total: typeof result.amount_total === "number" ? result.amount_total : null,
+      currency: result.currency ?? null,
+      livemode: Boolean(result.livemode),
+    };
+  } catch {
+    // Network error or timeout talking to Stripe — caller must treat this as
+    // "unable to verify", never as a confirmed negative.
+    return null;
+  }
 }
 
 // Verifies Stripe's webhook signature per their documented scheme, without the SDK.
