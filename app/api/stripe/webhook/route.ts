@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getBookingProviders } from "@/lib/booking/providers";
 import { verifyStripeSignature } from "@/lib/booking/stripe";
-import { recordStripeEventOnce, markRetainerPaid, markBalancePaid } from "@/lib/booking/bookings";
+import { confirmPaymentEvent } from "@/lib/booking/payments";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -9,7 +9,16 @@ export const maxDuration = 30;
 type StripeEvent = {
   id: string;
   type: string;
-  data: { object: { id: string; payment_status?: string; metadata?: Record<string, string> } };
+  livemode: boolean;
+  data: {
+    object: {
+      id: string;
+      payment_status?: string;
+      amount_total?: number;
+      currency?: string;
+      metadata?: Record<string, string>;
+    };
+  };
 };
 
 export async function POST(request: Request) {
@@ -30,18 +39,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
 
-  // Never process the same Stripe event twice, even across retried deliveries.
-  const isNew = await recordStripeEventOnce(providers.query, event.id, event.type);
-  if (!isNew) return NextResponse.json({ received: true, duplicate: true });
-
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
-    if (session.payment_status === "paid") {
-      const paymentType = session.metadata?.payment_type;
-      if (paymentType === "retainer") await markRetainerPaid(providers.query, session.id);
-      else if (paymentType === "balance") await markBalancePaid(providers.query, session.id);
-    }
+  if (event.type !== "checkout.session.completed") {
+    return NextResponse.json({ received: true, ignored: event.type });
   }
 
-  return NextResponse.json({ received: true });
+  const session = event.data.object;
+  const paymentType = session.metadata?.payment_type;
+  if (session.payment_status !== "paid" || (paymentType !== "retainer" && paymentType !== "balance")) {
+    return NextResponse.json({ received: true, ignored: "not_a_completed_payment" });
+  }
+
+  // Atomic: the event-idempotency record and the booking/attempt credit rise or fall
+  // together as ONE statement, and the full amount/currency/livemode/booking-state
+  // validation happens inside that same statement before anything is credited.
+  const outcome = await confirmPaymentEvent(providers.query, {
+    eventId: event.id,
+    eventType: event.type,
+    checkoutSessionId: session.id,
+    amountCents: session.amount_total ?? -1,
+    currency: (session.currency ?? "").toLowerCase(),
+    livemode: event.livemode,
+    paymentType,
+  });
+
+  return NextResponse.json({ received: true, outcome });
 }
