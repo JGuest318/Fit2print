@@ -49,9 +49,43 @@ const STATEMENTS = [
     event_type text NOT NULL,
     received_at timestamptz NOT NULL DEFAULT now()
   )`,
-  // Provenance: what exact terms did this client accept, immutably, even if wording changes later.
   `ALTER TABLE pf2p_bookings ADD COLUMN IF NOT EXISTS agreement_version text`,
   `ALTER TABLE pf2p_bookings ADD COLUMN IF NOT EXISTS agreement_text_hash text`,
+  // Reschedule lineage: a rescheduled booking is a NEW row that carries the paid
+  // credit forward; this links it back to the booking it replaced.
+  `ALTER TABLE pf2p_bookings ADD COLUMN IF NOT EXISTS rescheduled_from_booking_id uuid REFERENCES pf2p_bookings(id)`,
+  // Flag for payments that arrived but could not be safely auto-confirmed
+  // (expired hold, date taken by someone else, amount/currency/mode mismatch).
+  `ALTER TABLE pf2p_bookings ADD COLUMN IF NOT EXISTS needs_resolution boolean NOT NULL DEFAULT false`,
+  // Full history of every Checkout session ever created for a booking, so a payment
+  // on an older (non-"current") session is still reconciled correctly, and repeated
+  // visits to a pay link reuse an active session instead of minting a new one.
+  `CREATE TABLE IF NOT EXISTS pf2p_payment_attempts (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    booking_id uuid NOT NULL REFERENCES pf2p_bookings(id),
+    payment_type text NOT NULL CHECK (payment_type IN ('retainer', 'balance')),
+    checkout_session_id text NOT NULL UNIQUE,
+    checkout_url text NOT NULL,
+    amount_cents integer NOT NULL,
+    currency text NOT NULL DEFAULT 'usd',
+    livemode boolean NOT NULL,
+    status text NOT NULL DEFAULT 'created'
+      CHECK (status IN ('created', 'paid', 'expired', 'needs_resolution')),
+    created_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now(),
+    expires_at timestamptz NOT NULL
+  )`,
+  `CREATE INDEX IF NOT EXISTS pf2p_payment_attempts_booking_idx ON pf2p_payment_attempts (booking_id, payment_type)`,
+  `CREATE INDEX IF NOT EXISTS pf2p_payment_attempts_active_idx ON pf2p_payment_attempts (booking_id, payment_type, status) WHERE status = 'created'`,
+  // Manual refund ledger for V1: not wired to Stripe's refund API automatically,
+  // but gives a clear, queryable record of what was owed, refunded, and resolved.
+  `CREATE TABLE IF NOT EXISTS pf2p_refund_records (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    booking_id uuid NOT NULL REFERENCES pf2p_bookings(id),
+    amount_cents integer NOT NULL,
+    reason text NOT NULL,
+    recorded_at timestamptz NOT NULL DEFAULT now()
+  )`,
 ];
 
 export async function POST(request: Request) {
