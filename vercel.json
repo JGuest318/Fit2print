@@ -1,6 +1,6 @@
 {
   "crons": [
-    { "path": "/api/booking/notifications/retry", "schedule": "*/5 * * * *" },
-    { "path": "/api/booking/admin/expire-holds", "schedule": "*/5 * * * *" }
+    { "path": "/api/booking/notifications/retry", "schedule": "0 12 * * *" },
+    { "path": "/api/booking/admin/expire-holds", "schedule": "5 12 * * *" }
   ]
 }
