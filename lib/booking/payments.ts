@@ -28,6 +28,11 @@ export async function findReusableAttempt(query: Query, bookingId: string, payme
   return rows.length ? (rows[0] as unknown as PaymentAttempt) : null;
 }
 
+export async function getAttemptBySessionId(query: Query, checkoutSessionId: string): Promise<PaymentAttempt | null> {
+  const rows = await query(`SELECT * FROM pf2p_payment_attempts WHERE checkout_session_id = $1`, [checkoutSessionId]);
+  return rows.length ? (rows[0] as unknown as PaymentAttempt) : null;
+}
+
 export async function recordAttempt(
   query: Query,
   params: {
