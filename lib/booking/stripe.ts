@@ -11,7 +11,15 @@ function formEncode(params: Record<string, string | number | undefined>): string
   return search.toString();
 }
 
-export type CheckoutSession = { id: string; url: string };
+// Determines whether the configured Stripe secret key is a live or test key.
+// Used to reject any webhook event whose livemode doesn't match our own
+// environment (e.g. a stray live event should never touch preview data).
+export function currentEnvironmentIsLive(): boolean {
+  const key = process.env.STRIPE_SECRET_KEY || "";
+  return key.startsWith("sk_live_");
+}
+
+export type CheckoutSession = { id: string; url: string; expiresAt: string; livemode: boolean; currency: string };
 
 export async function createCheckoutSession(opts: {
   amountCents: number;
@@ -50,7 +58,31 @@ export async function createCheckoutSession(opts: {
   if (!response.ok || typeof result?.id !== "string" || typeof result?.url !== "string") {
     throw new Error("checkout_session_failed");
   }
-  return { id: result.id, url: result.url };
+  return {
+    id: result.id,
+    url: result.url,
+    expiresAt: new Date(result.expires_at * 1000).toISOString(),
+    livemode: Boolean(result.livemode),
+    currency: String(result.currency || "usd"),
+  };
+}
+
+export async function retrieveCheckoutSession(sessionId: string): Promise<{ id: string; payment_status: string; amount_total: number | null; currency: string | null; livemode: boolean } | null> {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  if (!secretKey) return null;
+  const response = await fetch(`${STRIPE_API}/checkout/sessions/${encodeURIComponent(sessionId)}`, {
+    headers: { Authorization: `Bearer ${secretKey}` },
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!response.ok) return null;
+  const result = await response.json();
+  return {
+    id: result.id,
+    payment_status: result.payment_status,
+    amount_total: typeof result.amount_total === "number" ? result.amount_total : null,
+    currency: result.currency ?? null,
+    livemode: Boolean(result.livemode),
+  };
 }
 
 // Verifies Stripe's webhook signature per their documented scheme, without the SDK.
