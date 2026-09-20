@@ -49,6 +49,9 @@ const STATEMENTS = [
     event_type text NOT NULL,
     received_at timestamptz NOT NULL DEFAULT now()
   )`,
+  // Provenance: what exact terms did this client accept, immutably, even if wording changes later.
+  `ALTER TABLE pf2p_bookings ADD COLUMN IF NOT EXISTS agreement_version text`,
+  `ALTER TABLE pf2p_bookings ADD COLUMN IF NOT EXISTS agreement_text_hash text`,
 ];
 
 export async function POST(request: Request) {
