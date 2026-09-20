@@ -3,6 +3,7 @@ import type { Query } from "./inquiries";
 
 export class DateUnavailable extends Error {}
 export class BookingNotFound extends Error {}
+export class AgreementNotAcceptable extends Error {}
 
 const HOLD_MINUTES = 30;
 const RETAINER_CENTS = 30000;
@@ -19,6 +20,8 @@ export type Booking = {
   hold_token: string | null;
   hold_expires_at: string | null;
   agreement_accepted_at: string | null;
+  agreement_version: string | null;
+  agreement_text_hash: string | null;
   promo_use_permission: boolean;
   retainer_amount_cents: number;
   retainer_checkout_session_id: string | null;
@@ -92,12 +95,27 @@ export async function getBooking(query: Query, bookingId: string): Promise<Booki
   return rows[0] as unknown as Booking;
 }
 
-export async function recordAgreementAcceptance(query: Query, bookingId: string, promoPermission: boolean): Promise<void> {
-  await query(
-    `UPDATE pf2p_bookings SET agreement_accepted_at = now(), promo_use_permission = $2
-     WHERE id = $1 AND status = 'held'`,
-    [bookingId, promoPermission],
+// Requires explicit agreement (agree=true) to record acceptance at all. Promotional-use
+// permission is a fully independent boolean — never inferred from general acceptance.
+// Records the exact agreement version and text hash so later wording changes can never
+// retroactively alter what this client is understood to have accepted.
+export async function recordAgreementAcceptance(
+  query: Query,
+  bookingId: string,
+  agree: boolean,
+  promoUsePermission: boolean,
+  agreementVersion: string,
+  agreementTextHash: string,
+): Promise<void> {
+  if (!agree) throw new AgreementNotAcceptable();
+  const rows = await query(
+    `UPDATE pf2p_bookings SET agreement_accepted_at = now(), promo_use_permission = $2,
+       agreement_version = $3, agreement_text_hash = $4
+     WHERE id = $1 AND status = 'held' AND agreement_accepted_at IS NULL
+     RETURNING id`,
+    [bookingId, promoUsePermission, agreementVersion, agreementTextHash],
   );
+  if (!rows.length) throw new AgreementNotAcceptable();
 }
 
 export async function attachRetainerCheckout(query: Query, bookingId: string, checkoutSessionId: string): Promise<void> {
