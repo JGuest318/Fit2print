@@ -62,7 +62,19 @@ export async function listAvailability(query: Query): Promise<Array<{ session_da
 // Owner approves an inquiry against an owner-opened date. Creates a HELD booking
 // with a 30-minute window. The unique index on (session_date) for active statuses
 // makes double-booking impossible at the database layer, not just in application code.
+//
+// IMPORTANT: correctness does not depend on the external hold-expiry scheduler having
+// run recently. Third-party/GitHub Actions schedules on short intervals are not reliably
+// on-time (observed real gaps of hours between runs). So this function first self-heals
+// any stale held booking on the requested date — the scheduler is a cleanup/reporting
+// convenience, never a correctness requirement.
 export async function approveBooking(query: Query, inquiryId: string, sessionDate: string): Promise<ApprovedBooking> {
+  await query(
+    `UPDATE pf2p_bookings SET status = 'expired', updated_at = now()
+     WHERE session_date = $1 AND status = 'held' AND hold_expires_at < now()`,
+    [sessionDate],
+  );
+
   const available = await query(
     `SELECT 1 FROM pf2p_availability WHERE session_date = $1 AND status = 'open'`,
     [sessionDate],
