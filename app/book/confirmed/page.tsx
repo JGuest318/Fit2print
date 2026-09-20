@@ -18,20 +18,28 @@ export default async function ConfirmedPage({ searchParams }: { searchParams: Pr
     return <Status title="Payment not found" message="We couldn't match this payment to a reservation. Please contact Photography Fit 2 Print." />;
   }
 
-  // This page is specifically for the RETAINER confirmation. A balance session
-  // landing here (e.g. a stale bookmarked link) must not be shown a retainer message.
   if (attempt.payment_type !== "retainer") {
     return <Status title="Wrong payment step" message="This link is for the reservation retainer, but this payment was for a different step. Check your booking status or contact Photography Fit 2 Print." reference={attempt.booking_id} />;
   }
 
   const booking = await getBooking(providers.query, attempt.booking_id).catch(() => null);
-  const liveSession = await retrieveCheckoutSession(sessionId);
-  const verificationUnavailable = liveSession === null;
-  const verifiedPaid = liveSession?.payment_status === "paid";
 
-  // Only ever assert what our own booking record currently shows — never the attempt
-  // row alone, since the booking is the single source of truth after concurrent updates.
-  if (booking && booking.status !== "held" && booking.retainer_payment_status === "paid") {
+  // A booking that was later cancelled or rescheduled still has retainer_payment_status
+  // = 'paid' on its own row (by design — it's historical fact), but that must never be
+  // shown as an ACTIVE confirmation. Check the current status explicitly.
+  if (booking?.status === "cancelled") {
+    return (
+      <Status
+        title="This reservation was cancelled"
+        message={booking.cancellation_reason === "rescheduled"
+          ? "This session was rescheduled to a new date. Your payment carried forward — no new retainer was charged."
+          : "This reservation has since been cancelled. If you have questions about your payment, please contact Photography Fit 2 Print."}
+        reference={attempt.booking_id}
+      />
+    );
+  }
+
+  if (booking && (booking.status === "confirmed" || booking.status === "paid_in_full") && booking.retainer_payment_status === "paid") {
     return (
       <Status
         title="Retainer received"
@@ -50,6 +58,10 @@ export default async function ConfirmedPage({ searchParams }: { searchParams: Pr
       />
     );
   }
+
+  const liveSession = await retrieveCheckoutSession(sessionId);
+  const verificationUnavailable = liveSession === null;
+  const verifiedPaid = liveSession?.payment_status === "paid";
 
   if (verificationUnavailable) {
     return (
