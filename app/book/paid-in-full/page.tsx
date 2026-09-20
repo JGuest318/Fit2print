@@ -1,5 +1,6 @@
 import { getBookingProviders } from "@/lib/booking/providers";
 import { getAttemptBySessionId } from "@/lib/booking/payments";
+import { getBooking } from "@/lib/booking/bookings";
 import { retrieveCheckoutSession } from "@/lib/booking/stripe";
 
 export const dynamic = "force-dynamic";
@@ -9,18 +10,26 @@ export default async function PaidInFullPage({ searchParams }: { searchParams: P
   const providers = getBookingProviders();
 
   if (!sessionId || !providers) {
-    return <Status title="Missing reference" message="We couldn't find a payment reference for this page. If you just paid, check your email confirmation or contact Photography Fit 2 Print." />;
+    return <Status title="Missing reference" message="We couldn't find a payment reference for this page. If you just paid, check your booking status or contact Photography Fit 2 Print." />;
   }
 
   const attempt = await getAttemptBySessionId(providers.query, sessionId);
   if (!attempt) {
-    return <Status title="Payment not found" message="We couldn't match this payment to a reservation. Please contact Photography Fit 2 Print with your confirmation email." />;
+    return <Status title="Payment not found" message="We couldn't match this payment to a reservation. Please contact Photography Fit 2 Print." />;
   }
 
+  // This page is specifically for the BALANCE payment. A retainer session landing here
+  // must never be told the session is "paid in full" — that was the original defect.
+  if (attempt.payment_type !== "balance") {
+    return <Status title="Wrong payment step" message="This link is for the remaining balance, but this payment was for the reservation retainer. Check your booking status or contact Photography Fit 2 Print." reference={attempt.booking_id} />;
+  }
+
+  const booking = await getBooking(providers.query, attempt.booking_id).catch(() => null);
   const liveSession = await retrieveCheckoutSession(sessionId);
+  const verificationUnavailable = liveSession === null;
   const verifiedPaid = liveSession?.payment_status === "paid";
 
-  if (attempt.status === "paid") {
+  if (booking && booking.status === "paid_in_full" && booking.balance_payment_status === "paid") {
     return (
       <Status
         title="Paid in full — see you soon"
@@ -30,11 +39,21 @@ export default async function PaidInFullPage({ searchParams }: { searchParams: P
     );
   }
 
-  if (attempt.status === "needs_resolution") {
+  if (booking?.needs_resolution) {
     return (
       <Status
         title="We're reviewing your payment"
-        message="Your payment was received, but we need to manually confirm a detail before finalizing. Photography Fit 2 Print will reach out shortly — your payment has not been lost."
+        message="Your payment appears to have gone through, but we need to manually confirm a detail before finalizing. Photography Fit 2 Print will reach out — your payment has not been lost."
+        reference={attempt.booking_id}
+      />
+    );
+  }
+
+  if (verificationUnavailable) {
+    return (
+      <Status
+        title="Payment status unavailable right now"
+        message="We couldn't verify your payment status at this moment. This does not mean your payment failed — please check back shortly, or contact Photography Fit 2 Print if you're unsure."
         reference={attempt.booking_id}
       />
     );
