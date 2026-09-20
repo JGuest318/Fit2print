@@ -63,13 +63,26 @@ export async function listAvailability(query: Query): Promise<Array<{ session_da
 
 // Self-heals any stale held booking on a given date. Called at every stage of the
 // flow (approval, agreement acceptance, retainer checkout) so correctness never
-// depends on the external hold-expiry scheduler's timing.
+// depends on the external hold-expiry scheduler's timing. expireStaleHolds (below)
+// is the global sweep the scheduler calls; this is the same logic scoped to one date.
 async function expireIfStale(query: Query, sessionDate: string): Promise<void> {
   await query(
     `UPDATE pf2p_bookings SET status = 'expired', updated_at = now()
      WHERE session_date = $1 AND status = 'held' AND hold_expires_at < now()`,
     [sessionDate],
   );
+}
+
+// Global sweep: releases every stale held booking, regardless of date. Used by the
+// scheduled worker as a cleanup/reporting convenience — correctness never depends on
+// this actually running promptly, because every user-facing stage self-heals inline.
+export async function expireStaleHolds(query: Query): Promise<Array<{ id: string; session_date: string }>> {
+  const rows = await query(
+    `UPDATE pf2p_bookings SET status = 'expired', updated_at = now()
+     WHERE status = 'held' AND hold_expires_at < now()
+     RETURNING id, session_date`,
+  );
+  return rows as Array<{ id: string; session_date: string }>;
 }
 
 export async function approveBooking(query: Query, inquiryId: string, sessionDate: string): Promise<ApprovedBooking> {
