@@ -1,0 +1,47 @@
+name: PF2P Booking Notification Retry (preview)
+
+# This workflow only pings the PREVIEW deployment's retry/expire-holds endpoints on a timer.
+# It does not build, deploy, or modify the production site in any way.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  retry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call booking notification retry endpoint (preview only)
+        env:
+          WORKER_SECRET: ${{ secrets.BOOKING_WORKER_SECRET }}
+          VERCEL_BYPASS: ${{ secrets.BOOKING_VERCEL_BYPASS }}
+          RETRY_URL: https://phfit2print-git-feature-bespo-e1747b-johnguestjr-2333s-projects.vercel.app/api/booking/notifications/retry
+        run: |
+          set -euo pipefail
+          http_status=$(curl -s -o /tmp/response.json -w "%{http_code}" -X POST "$RETRY_URL" \
+            -H "Authorization: Bearer $WORKER_SECRET" \
+            -H "x-vercel-protection-bypass: $VERCEL_BYPASS")
+          echo "HTTP status: $http_status"
+          cat /tmp/response.json
+          echo
+          if [ "$http_status" -ge 400 ]; then
+            echo "::error::Retry endpoint returned $http_status"
+            exit 1
+          fi
+      - name: Release expired booking holds (preview only)
+        env:
+          WORKER_SECRET: ${{ secrets.BOOKING_WORKER_SECRET }}
+          VERCEL_BYPASS: ${{ secrets.BOOKING_VERCEL_BYPASS }}
+          EXPIRE_URL: https://phfit2print-git-feature-bespo-e1747b-johnguestjr-2333s-projects.vercel.app/api/booking/admin/expire-holds
+        run: |
+          set -euo pipefail
+          http_status=$(curl -s -o /tmp/expire.json -w "%{http_code}" -X POST "$EXPIRE_URL" \
+            -H "Authorization: Bearer $WORKER_SECRET" \
+            -H "x-vercel-protection-bypass: $VERCEL_BYPASS")
+          echo "HTTP status: $http_status"
+          cat /tmp/expire.json
+          echo
+          if [ "$http_status" -ge 400 ]; then
+            echo "::error::Expire-holds endpoint returned $http_status"
+            exit 1
+          fi
