@@ -185,17 +185,24 @@ export async function rescheduleBooking(query: Query, originalBookingId: string,
        WHERE id = (SELECT id FROM locked_original)
          AND EXISTS (SELECT 1 FROM locked_original)
          AND EXISTS (SELECT 1 FROM target_eligible)
-       RETURNING *
+       RETURNING id
      ),
+     -- IMPORTANT: the replacement's status/payment fields must come from locked_original
+     -- (the row as it was BEFORE this statement changed it), never from cancel_original's
+     -- RETURNING, which reflects the UPDATE's new values (status = 'cancelled'). Postgres's
+     -- RETURNING clause always returns the row's post-update values, so sourcing the
+     -- replacement's data from cancel_original silently created it already cancelled and
+     -- therefore outside the active-booking double-booking protection.
      new_booking AS (
        INSERT INTO pf2p_bookings
          (inquiry_id, session_date, status, agreement_accepted_at, agreement_version, agreement_text_hash,
           promo_use_permission, retainer_amount_cents, retainer_payment_status,
           balance_amount_cents, balance_payment_status, rescheduled_from_booking_id)
-       SELECT inquiry_id, $2, status, agreement_accepted_at, agreement_version, agreement_text_hash,
-              promo_use_permission, retainer_amount_cents, retainer_payment_status,
-              balance_amount_cents, balance_payment_status, id
-       FROM cancel_original
+       SELECT lo.inquiry_id, $2, lo.status, lo.agreement_accepted_at, lo.agreement_version, lo.agreement_text_hash,
+              lo.promo_use_permission, lo.retainer_amount_cents, lo.retainer_payment_status,
+              lo.balance_amount_cents, lo.balance_payment_status, lo.id
+       FROM locked_original lo
+       WHERE EXISTS (SELECT 1 FROM cancel_original)
        RETURNING id
      )
      SELECT (SELECT id FROM new_booking) AS new_booking_id,
