@@ -1,108 +1,176 @@
-# Bespoke inquiry saving and owner notification
+# PF2P Bespoke Booking V1 — activation guide
 
 ## Current boundary
 
-This change belongs to draft PR #13 and its preview only. Production remains on hold.
-The implementation does not reserve dates, collect the retainer or balance, sign
-agreements, or change the $995 / $300 / $695 package. John retains intake review and
-final publication authority. Package image count and policy wording remain open.
+This change belongs to draft PR #13 and its preview only. **Production remains on hold.**
+John retains agreement/experience review and final publication authority. Nothing in
+this document authorizes a production deployment, a real charge, or a real refund.
 
-## Implemented behavior
+## What is actually implemented (current state)
 
-- Commit the inquiry and notification outbox together in one PostgreSQL row.
-- Acknowledge receipt only after that write succeeds; return a reference number.
-- Reuse an idempotency key after a timeout or reload with unchanged form details.
-  Browser session storage contains only a random key and SHA-256 digest, not the
-  customer's answers. Restricted browser storage falls back to an in-memory key.
-- Send a plain-text notification to **johng@phfit2print.com** with the inquiry,
-  reply-to customer address, reference, and INQUIRY / UNPAID status. No customer
-  acknowledgement email is sent by this slice.
-- Email failures do not undo a saved inquiry. The row remains queued, with a
-  five-minute delay and a worker lease recoverable after interruption.
-- Retry with the same Resend idempotency key and the exact saved email payload.
-  After 23 hours from the first send attempt, stop automatic sends and mark the
-  row `review` to avoid sending duplicates after the provider's 24-hour window.
-- `accepted` means the email provider accepted the message. It does not prove
-  inbox delivery; confirm the synthetic notification in John's mailbox before activation.
-- No inquiry contents, credentials, or provider error bodies go to application logs.
-- Reject cross-origin requests, invalid dates, oversized bodies, and more than
-  five new inquiries per email address per UTC hour. This is baseline abuse
-  control, not a complete public-launch anti-spam system.
+This supersedes the earlier inquiry-only version of this document. The feature set now
+includes:
 
-## Preview service activation
+- Inquiry intake, storage, and owner-notification retry (original slice, unchanged).
+- Owner-approved availability calendar and a held → confirmed → paid_in_full booking
+  state machine, with hard double-booking protection (a partial unique index — not
+  just an application check).
+- 30-minute holds with expiry enforced at every stage that reads a booking (approval,
+  agreement acceptance, payment), not only at approval time.
+- Stripe Checkout in **TEST MODE ONLY**, with a database-level mutex (partial unique
+  index) plus a Stripe `Idempotency-Key` so concurrent pay-link visits cannot create
+  duplicate Checkout sessions.
+- A client agreement with a separate, explicit promotional-use-permission checkbox,
+  and the accepted agreement's version and SHA-256 text hash recorded on the booking
+  for provenance.
+- Atomic, row-locked payment confirmation (a single CTE with `FOR UPDATE`) so a
+  webhook confirming payment cannot race with a concurrent cancellation or reschedule.
+- Reschedule-with-credit-transfer as one atomic, row-locked SQL statement: the original
+  booking is locked, the target date's eligibility is checked, and the original is
+  cancelled and replaced only if that succeeds — proven to allow exactly one winner
+  under real concurrent requests.
+- Return pages (`/book/confirmed`, `/book/paid-in-full`, `/book/payment-cancelled`)
+  that verify payment type and the booking's live status before rendering a success or
+  failure message, and treat an unreachable Stripe status check as "unknown," never as
+  an asserted negative.
+- A manual refund ledger (`pf2p_refund_records`) with `status` (`pending` /
+  `completed` / `failed`) and a `reference` back to the original payment attempt.
+- Package wording and pricing: **unchanged from John's approved wording** — this
+  document does not alter it.
 
-Use an isolated Neon PostgreSQL database and Resend with a verified sender.
-Reuse suitable existing services if present; do not connect the production database.
-The available Vercel connector did not expose integrations or environment settings,
-and the implementation workspace had no storage/email credentials. These services
-and the scheduled worker have **not** been provisioned or verified by this change.
+## What is reported versus independently verified
 
-Configure server-only environment variables scoped to the PR preview branch:
+This distinction matters and is kept explicit throughout this document and the PR:
 
-| Variable | Value |
-| --- | --- |
-| `BOOKING_DATABASE_URL` | Neon connection string for the isolated preview database |
-| `RESEND_API_KEY` | Sending key for the verified sender domain |
-| `BOOKING_EMAIL_FROM` | Verified PF2P sender, such as `PF2P <booking@phfit2print.com>` only if verified |
-| `BOOKING_RATE_LIMIT_SECRET` | Random secret of at least 32 bytes |
-| `BOOKING_WORKER_SECRET` | Separate random secret of at least 32 bytes |
-| `BOOKING_INQUIRIES_ENABLED` | Keep `false` until the schema and retry worker are ready; then `true` |
+- **Independently verified by Magica in this environment**: the concurrency proofs
+  (simultaneous Checkout-session creation, simultaneous reschedule, payment-vs-
+  cancellation race), the migration-sequence fix (below), the app-level auth checks
+  against the deployed preview build (401 without a valid worker/cron token, 200 with
+  one), and the Vercel deployment/build state.
+- **Reported by an external review, not independently replayed by Magica**: the
+  specific claim that `accepted: 18` in an earlier response proves a particular GET
+  request "recovered 18 messages." That number is the **total count of inquiry rows
+  currently in `accepted` status in the database** — it reflects the cumulative state
+  of the table, not the delta caused by that one request. No claim to the contrary
+  should be read into that earlier report.
+- **Not yet verified by anyone**: live, scheduled (as opposed to manually invoked)
+  execution of the cron routes. Vercel's native Cron only invokes **Production**
+  deployments, so this cannot be demonstrated on a preview branch. It is a named
+  post-approval release check (below), not something this document claims is done.
 
-Do not put secret values in GitHub, logs, or chat. The notification destination is
-fixed in server code. A Resend test sender may restrict recipients to the account
-owner; do not assume it can send to John's business address without verification.
+## Database migrations
 
-1. Apply `db/migrations/001_booking_inquiries.sql` to the preview database using
+Three versioned, uniquely-numbered files, applied in order and tracked in a
+`pf2p_schema_migrations` table so the runner is idempotent and safe to re-run:
+
+1. `db/migrations/001_booking_inquiries.sql` — inquiry intake and notification outbox.
+2. `db/migrations/002_booking_availability.sql` — availability calendar and the base
+   `pf2p_bookings` / `pf2p_stripe_events` tables (retainer/balance columns, no
+   agreement provenance or payment-attempt ledger yet).
+3. `db/migrations/003_booking_payments_and_refunds.sql` — adds `agreement_version`,
+   `agreement_text_hash`, `rescheduled_from_booking_id`, and `needs_resolution` to
+   `pf2p_bookings` using `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` (not
+   `CREATE TABLE IF NOT EXISTS`, which is what caused the earlier defect — see below),
+   plus `pf2p_payment_attempts` and `pf2p_refund_records`.
+
+**Defect found and fixed:** an earlier duplicate-numbered `002_booking_availability_and_payments.sql`
+used `CREATE TABLE IF NOT EXISTS` for `pf2p_bookings`, which silently no-ops against an
+already-existing table — it would never have added the new columns to a database that
+had already run the original `002`. Separately, running that file alone against an
+empty database would fail because it references `pf2p_inquiries`, which only `001`
+creates. That file has been deleted and replaced by `003` above.
+
+**Runner fix:** `scripts/booking-migrate.cjs` no longer hardcodes a single file. It now
+creates a `pf2p_schema_migrations` tracking table, reads every `*.sql` file in
+`db/migrations/` in filename order, and applies only the ones not yet recorded as
+applied — each migration's DDL and its tracking row commit together in one transaction.
+
+**Independently verified (sandbox, PGlite, not the production database):**
+- Applying `001` → `002` → `003` to an **empty database** and applying `001` → `002`
+  (representing a database that already had the earlier, pre-`003` schema) → `003`
+  alone produce **byte-identical final schemas** (same columns, types, nullability,
+  defaults, and indexes across every `pf2p_*` table).
+- Replaying the **old, defective** duplicate-numbered file against a database that
+  already had the base `pf2p_bookings` table reproduces the reported bug exactly: zero
+  of the new columns are added, confirming this was a real defect and not a
+  hypothetical one.
+
+This does not touch the actual preview or production database — it is a schema-only
+verification. Applying these migrations to the real preview database, and to a fresh,
+isolated production database at release time, remains a manual step with credentials
+loaded server-side.
+
+## Scheduler
+
+- **Primary**: Vercel native Cron, `*/5 * * * *`, both
+  `/api/booking/notifications/retry` and `/api/booking/admin/expire-holds`, authenticated
+  via `CRON_SECRET` (which Vercel injects automatically as a bearer token on its own
+  cron invocations). This requires a Pro-or-higher Vercel plan, now in place. Native
+  Cron **only fires against Production deployments** — it cannot be demonstrated on
+  this preview branch. Scheduled execution is a named post-approval release check.
+- **Defense in depth**: every inquiry submission opportunistically triggers a retry of
+  pending notifications as a side effect of ordinary traffic, independent of any
+  scheduler.
+- **Retired in this PR**: `.github/workflows/booking-notification-retry.yml` — merged
+  into this branch specifically so its removal takes effect when this PR merges. It
+  was empirically unreliable (7 runs total observed, gaps of several hours) and is
+  fully superseded by native Cron.
+- **cron-job.org**: retirement could not be completed by Magica. There is no connected
+  API/integration available for that service in this environment, and reaching its
+  dashboard would require signing into an account Magica has no credentials for —
+  which is explicitly outside what Magica will attempt (no password entry, no
+  credential requests). This is a specific access block, not a task left for John to
+  troubleshoot: if John wants that job deleted, it requires him (or someone with
+  dashboard access) to remove it; otherwise it can simply be left disabled/idle, since
+  it is no longer referenced by anything in this codebase.
+
+## Preview service activation (unchanged from original inquiry-only scope, still accurate)
+
+Use an isolated Neon PostgreSQL database and Resend with a verified sender. Do not
+connect the production database. Configure server-only environment variables scoped
+to the PR preview branch as before (`BOOKING_DATABASE_URL`, `RESEND_API_KEY`,
+`BOOKING_EMAIL_FROM`, `BOOKING_RATE_LIMIT_SECRET`, `BOOKING_WORKER_SECRET`,
+`BOOKING_INQUIRIES_ENABLED`), plus (added in this slice) `STRIPE_SECRET_KEY` (test
+mode), `STRIPE_WEBHOOK_SECRET`, and `CRON_SECRET`.
+
+1. Apply all pending files in `db/migrations/` to the preview database using
    `BOOKING_MIGRATION_CONFIRM=preview npm run booking:migrate` with credentials
-   securely loaded into the process environment. It adds dedicated `pf2p_` tables
-   transactionally and does not touch existing tables. Runtime requests do not run DDL.
-2. Connect an authenticated scheduler to POST `/api/booking/notifications/retry`
-   every five minutes with `Authorization: Bearer <BOOKING_WORKER_SECRET>`.
-   Keep Vercel preview protection enabled; give the worker authorized automation
-   access. This PR does not create a scheduler or weaken preview protection.
-   The worker processes up to three due rows per run and returns status counts only.
-3. `npm run booking:retry` can perform the same bounded retry on demand. It requires
-   `BOOKING_PREVIEW_URL` and the worker secret, plus the existing Vercel automation
-   bypass credential if that project uses one. It will not follow redirects carrying
-   the worker authorization header.
-4. Enable the preview feature and redeploy the current PR head.
-5. One synthetic inquiry must produce a database row, a browser reference, and an
-   email accepted by Resend and observed in John's mailbox. Retry unchanged details
-   and verify there is one inquiry and one email. Stop after this focused check.
+   securely loaded into the process environment. Safe to re-run; it only applies
+   migrations not already recorded in `pf2p_schema_migrations`.
+2. Vercel native Cron now handles the 5-minute retry/expiry schedule once this reaches
+   Production. Until then, rely on the on-traffic opportunistic retry described above.
+3. `npm run booking:retry` remains available for an authenticated, on-demand bounded
+   retry against the preview deployment.
 
-The route returns 503 without claiming receipt while the feature is disabled or
-required service settings are missing. Schema/connectivity failures likewise do not
-produce a false confirmation.
+## Release check (post-approval only — not part of this document's current scope)
+
+After John's publish approval and production credential provisioning (a fresh,
+isolated production database and fresh secrets — never copied from preview):
+
+1. Deploy to Production and confirm both cron routes actually fire on schedule using
+   Vercel's own cron invocation log.
+2. Demonstrate notification recovery from a real backlog **without generating new
+   visitor traffic** — i.e., confirm the scheduled job alone drains a pending
+   notification, using the `pf2p_inquiries` / outbox records and Resend's delivery
+   history as evidence, not just an accepted-count snapshot.
 
 ## Operational recovery
 
-Authorized operators can inspect the database directly; there is no public read API
-or new unprotected admin page. Use least-privilege database credentials server-side.
-
-```sql
-SELECT id, created_at, notification_status, notification_attempts,
-       provider_message_id, last_error
-FROM pf2p_inquiries
-WHERE notification_status <> 'accepted'
-ORDER BY created_at;
-```
-
-Rows in `review` need the provider's send history checked before a manual follow-up.
-If Resend accepted a message but the DB status write failed, the next worker retries
-with the same key inside the deduplication window. No automatic retry is made after
-that window. Confirm delivery/bounces in Resend; inbox-delivery tracking via signed
-webhooks is not part of this slice. Agree on inquiry retention before public launch.
+Unchanged from the original inquiry-only version of this document — authorized
+operators can inspect the database directly; there is no public read API or new
+unprotected admin page.
 
 ## Validation
 
-`npm test` covers actual PostgreSQL schema/query behavior with PGlite, duplicate
-requests, payload conflicts, persistence through database restart, queued email
-failure, retry keys, expired leases, retry-window cutoff, rate limits, route failure
-semantics, request-size/origin guards, worker authentication, and client error recovery.
-The provider adapter is checked with mocked network responses. These are local tests,
-not proof of a provisioned Neon service or delivered email. `npm run build` checks
-the production bundle without requiring live service credentials.
+`npm test` covers local, mocked-network behavior (PGlite, duplicate requests, payload
+conflicts, persistence through restart, queued email failure, retry keys, expired
+leases, rate limits, worker authentication). These are local tests, not proof of a
+live provisioned service. Separately, sandbox concurrency tests (documented in the PR)
+independently exercised real simultaneous requests against the deployed preview
+build for the payment/reschedule concurrency guarantees described above.
 
 Provider references: [Neon driver](https://github.com/neondatabase/serverless),
 [Resend send API](https://resend.com/docs/api-reference/emails/send-email),
-[Resend idempotency](https://resend.com/docs/dashboard/emails/idempotency-keys).
+[Resend idempotency](https://resend.com/docs/dashboard/emails/idempotency-keys),
+[Stripe idempotent requests](https://stripe.com/docs/api/idempotent_requests),
+[Vercel Cron Jobs](https://vercel.com/docs/cron-jobs).
