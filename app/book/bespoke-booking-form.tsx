@@ -121,7 +121,7 @@ export function BespokeBookingForm() {
         {state === "submitting" ? "Sending Request…" : "Request a Bespoke Session"}
       </button>
       <p className="text-center text-xs leading-relaxed text-white/35">
-        No card information is collected on this page. Payment will only be introduced after the secure payment workflow and PF2P policies are approved for production.
+        No card information is collected on this page. Payment is only requested after your session date is reviewed and approved, through a secure Stripe checkout link.
       </p>
     </form>
   );
