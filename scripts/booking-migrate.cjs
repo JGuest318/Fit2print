@@ -3,8 +3,11 @@ const path = require('node:path');
 const { neon } = require('@neondatabase/serverless');
 
 // Explicit opt-in avoids accidentally migrating a database from inherited env.
-if (process.env.BOOKING_MIGRATION_CONFIRM !== 'preview' || !process.env.BOOKING_DATABASE_URL) {
-  console.error('Set BOOKING_DATABASE_URL for the isolated preview database and BOOKING_MIGRATION_CONFIRM=preview.');
+// Accepts 'preview' or 'production' so the same idempotent runner can be used for
+// both, as long as the operator explicitly names which environment they intend.
+const CONFIRM = process.env.BOOKING_MIGRATION_CONFIRM;
+if ((CONFIRM !== 'preview' && CONFIRM !== 'production') || !process.env.BOOKING_DATABASE_URL) {
+  console.error('Set BOOKING_DATABASE_URL for the target database and BOOKING_MIGRATION_CONFIRM=preview or BOOKING_MIGRATION_CONFIRM=production.');
   process.exit(1);
 }
 
@@ -39,7 +42,7 @@ async function main() {
   const pending = files.filter((f) => !applied.has(f));
 
   if (pending.length === 0) {
-    console.log('No pending migrations. Schema already up to date.');
+    console.log(`No pending migrations. Schema already up to date. (${CONFIRM})`);
     return;
   }
 
@@ -53,7 +56,7 @@ async function main() {
     console.log(`Applied ${file}`);
   }
 
-  console.log(`Preview booking schema applied. (${pending.length} migration(s) run: ${pending.join(', ')})`);
+  console.log(`${CONFIRM === 'production' ? 'Production' : 'Preview'} booking schema applied. (${pending.length} migration(s) run: ${pending.join(', ')})`);
 }
 
 main().catch(() => {
