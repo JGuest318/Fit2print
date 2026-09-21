@@ -1,10 +1,9 @@
 import { createHash } from "node:crypto";
 
-// DRAFT WORDING — pending John's final review before production activation.
 // Bump AGREEMENT_VERSION any time AGREEMENT_TEXT changes. The exact text hash is
 // stored on the booking at acceptance time, so a later wording change can never
 // retroactively alter what a past client is understood to have agreed to.
-export const AGREEMENT_VERSION = "2026-09-20-draft-v1";
+export const AGREEMENT_VERSION = "2026-09-21-v1";
 
 export const AGREEMENT_TEXT = `Photography Fit 2 Print — Bespoke Experience Agreement (${AGREEMENT_VERSION})
 
@@ -17,7 +16,7 @@ Total price: $995.
 - $695 remaining balance is due on the session date, before the session begins.
 No card information is stored by Photography Fit 2 Print. Payments are processed by Stripe.
 
-3. CANCELLATION AND RESCHEDULING (DRAFT — subject to owner confirmation)
+3. CANCELLATION AND RESCHEDULING
 - Rescheduling: one complimentary reschedule is permitted with at least 7 days' notice before the session date, subject to availability.
 - Cancellation more than 7 days before the session date: the $300 retainer may be refunded at Photography Fit 2 Print's discretion, less any processing fees already incurred.
 - Cancellation within 7 days of the session date, or a no-show: the $300 retainer is non-refundable.
