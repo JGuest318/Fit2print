@@ -1,1 +1,93 @@
-PLACEHOLDER
+{
+  "$schema": "PF2P Affiliate Engine: Partner -> Offer -> Story -> Creative -> Channel -> Result -> Learning. One reusable registry across all affiliate partners; each new partner/offer/story is a new entry, never a rewrite of this structure.",
+  "campaigns": [
+    {
+      "id": "REBLUM-001",
+      "partner": {
+        "name": "Reblum",
+        "product": "AI skin-retouching software for professional portrait photographers",
+        "affiliateLink": "https://reblum.app/p/FIT2PRT",
+        "affiliateLinkNote": "Campaign-specific tracking code, reserved for this Pinterest test so its clicks stay separable from the general/legacy code (reblum.app/p/TID.2934) already published on other Behind the Print content.",
+        "disclosureText": "I'm a Reblum affiliate. If you decide to try Reblum through my affiliate link or code (reblum.app/p/FIT2PRT), I may receive a benefit from the referral. These are my photographs and my opinions about how Reblum fits into my own retouching workflow."
+      },
+      "offer": {
+        "summary": "7-day free trial, no card required, plus a discount via the affiliate link if the trial converts.",
+        "sourceOfTruth": "Reblum Creator Brief v1.5, section 10",
+        "notes": "No specific discount percentage is displayed in ad creative or disclosure per the partner's own 'do not show pricing details' guidance (region-variable pricing). Do not reintroduce a hard percentage without reconfirming with the partner."
+      },
+      "story": {
+        "angle": "Retouching assistant, not aesthetic authority",
+        "summary": "Reblum handles the repetitive, high-frequency/low-frequency skin work; the photographer still makes every creative call. The proof is that the retouch shouldn't invite an argument about how it was made.",
+        "constraints": [
+          "No invented testimonials, time-savings numbers, or fabricated before/after results",
+          "No claim that Reblum creates John's aesthetic",
+          "Uses John's real photography and real workflow only"
+        ]
+      },
+      "channel": {
+        "platform": "Pinterest",
+        "format": "Static Pin, 1000x1500 (2:3 vertical)",
+        "landingDestination": "https://phfit2print.com/blog/behind-the-print-the-retouch-youre-not-supposed-to-notice"
+      },
+      "creatives": [
+        {
+          "creativeId": "Reblum-PIN-001A",
+          "messageTest": "discount / offer-led",
+          "kicker": "Limited-Time Offer",
+          "headline": "Professional Retouching Without Surrendering Your Eye",
+          "subhead": "I tried Reblum on my own portrait work. Here's what stayed mine.",
+          "cta": "See My Workflow",
+          "assetUrl": "https://g.tlcdn.com/gen/cf75e4c335c349e089e45ad74cced2dee.jpeg",
+          "destinationUrl": "https://phfit2print.com/blog/behind-the-print-the-retouch-youre-not-supposed-to-notice?utm_source=pinterest&utm_medium=paid_social&utm_campaign=reblum_001&utm_content=Reblum-PIN-001A"
+        },
+        {
+          "creativeId": "Reblum-PIN-001B",
+          "messageTest": "philosophy / authority-led",
+          "kicker": "My Philosophy",
+          "headline": "I Don't Let Software Decide What Beautiful Looks Like",
+          "subhead": "Reblum handles part of the work. I make the photograph.",
+          "cta": "See How I Use It",
+          "assetUrl": "https://g.tlcdn.com/gen/2cb4713edf814dc9b9e7e497203fc85e.jpeg",
+          "destinationUrl": "https://phfit2print.com/blog/behind-the-print-the-retouch-youre-not-supposed-to-notice?utm_source=pinterest&utm_medium=paid_social&utm_campaign=reblum_001&utm_content=Reblum-PIN-001B"
+        },
+        {
+          "creativeId": "Reblum-PIN-001C",
+          "messageTest": "process / education-led",
+          "kicker": "From Capture to Print",
+          "headline": "Where Reblum Fits Inside My Real Portrait Workflow",
+          "subhead": "An honest look at one retouch, start to finish.",
+          "cta": "See the Process",
+          "assetUrl": "https://g.tlcdn.com/gen/5e7d2a57f9cb45f2bad621d07d5a1902.jpeg",
+          "destinationUrl": "https://phfit2print.com/blog/behind-the-print-the-retouch-youre-not-supposed-to-notice?utm_source=pinterest&utm_medium=paid_social&utm_campaign=reblum_001&utm_content=Reblum-PIN-001C"
+        }
+      ],
+      "result": {
+        "metricsToTrack": [
+          "impressions", "pinSaves", "outboundClicks", "ctr", "cpc", "spend",
+          "pf2pVisits", "affiliateClicks", "confirmedConversions"
+        ],
+        "funnel": "Impression -> Pin engagement (saves) -> PF2P visit -> affiliate click -> conversion",
+        "explicitlyNotOptimizingFor": ["likes"],
+        "status": "not_yet_launched",
+        "spendGuidance": "Small controlled test only. No meaningful Pinterest spend until instrumentation is validated."
+      },
+      "learning": {
+        "openQuestions": [
+          "Which of the 3 stories (discount / philosophy / process) gets a photographer curious enough to click through?",
+          "Does that curiosity convert into a confirmed Reblum signup/purchase?"
+        ],
+        "notes": []
+      }
+    }
+  ],
+  "template": {
+    "id": "PARTNER-CODE-001",
+    "partner": { "name": "", "product": "", "affiliateLink": "", "affiliateLinkNote": "", "disclosureText": "" },
+    "offer": { "summary": "", "sourceOfTruth": "", "notes": "" },
+    "story": { "angle": "", "summary": "", "constraints": [] },
+    "channel": { "platform": "", "format": "", "landingDestination": "" },
+    "creatives": [],
+    "result": { "metricsToTrack": [], "funnel": "", "explicitlyNotOptimizingFor": [], "status": "", "spendGuidance": "" },
+    "learning": { "openQuestions": [], "notes": [] }
+  }
+}
