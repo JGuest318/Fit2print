@@ -1,1 +1,69 @@
-aW1wb3J0IHR5cGUgeyBCbG9nUG9zdCB9IGZyb20gIkAvbGliL2Jsb2ctcG9zdHMiOwoKZXhwb3J0IGNvbnN0IENVUlJFTlRfQkxPR19QT1NUUzogQmxvZ1Bvc3RbXSA9IFsKICB7CiAgICBzbHVnOiAiYmVoaW5kLXRoZS1wcmludC10aGUtcmV0b3VjaC15b3VyZS1ub3Qtc3VwcG9zZWQtdG8tbm90aWNlIiwKICAgIHRpdGxlOiAiQmVoaW5kIHRoZSBQcmludDogVGhlIFJldG91Y2ggWW91J3JlIE5vdCBTdXBwb3NlZCB0byBOb3RpY2UiLAogICAgZXhjZXJwdDoKICAgICAgIlRlc3RpbmcgUmVibHVtIG9uIGEgcmVhbCBTaHV0dGVyRmVzdCBwb3J0cmFpdCBvZiBTeWRuZXksIGFuZCBsZWFybmluZyB0aGF0IHRoZSBiZXN0IHNraW4gd29yayBpcyB0aGUga2luZCBub2JvZHkgaGFzIGFueXRoaW5nIHRvIGFyZ3VlIGFib3V0LiIsCiAgICBkYXRlOiAiMjAyNi0wOS0yOSIsCiAgICBzZW9UaXRsZToKICAgICAgIkJlaGluZCB0aGUgUHJpbnQ6IFRoZSBSZXRvdWNoIFlvdSdyZSBOb3QgU3VwcG9zZWQgdG8gTm90aWNlIHwgQmVoaW5kIFRoZSBQcmludCIsCiAgICBtZXRhRGVzY3JpcHRpb246CiAgICAgICJKb2huIEd1ZXN0IHRlc3RzIFJlYmx1bSdzIHNraW4gcmV0b3VjaGluZyBvbiBhIHJlYWwgU2h1dHRlckZlc3QgcG9ydHJhaXQgb2YgU3lkbmV5LCBhbmQgZXhwbGFpbnMgd2h5IGF2b2lkaW5nIGFuIGFyZ3VtZW50IGFib3V0IHRoZSBlZGl0IHdhcyB0aGUgYWN0dWFsIGdvYWwuIiwKICAgIHRhZ3M6IFsKICAgICAgIkJlaGluZCBUaGUgUHJpbnQiLAogICAgICAiUG9ydHJhaXQgUGhvdG9ncmFwaHkiLAogICAgICAiUmV0b3VjaGluZyIsCiAgICAgICJTaHV0dGVyRmVzdCIsCiAgICAgICJSZWJsdW0iLAogICAgXSwKICAgIGltYWdlOiAiaHR0cHM6Ly9nLnRsY2RuLmNvbS9nZW4vNTgyMzU3Nzc4Mzk3NDljZjhjNDYwNWViYjM4MTJlYWQuanBlZyIsCiAgICBpbWFnZUFsdDoKICAgICAgIk1vZGVsIFN5ZG5leSB3ZWFyaW5nIHRhbGwgdGVhbCBvc3RyaWNoLWZlYXRoZXIgd2luZ3MsIGEgZ29sZCBicm9jYWRlIHRvcCwgbGF5ZXJlZCBnb2xkIGpld2VscnkgYW5kIGJhbmdsZXMsIHNlYXRlZCBhbmQgbG9va2luZyBkaXJlY3RseSBpbnRvIHRoZSBjYW1lcmEiLAogICAgaW1hZ2VDYXB0aW9uOgogICAgICAiU3lkbmV5LCBwaG90b2dyYXBoZWQgYXQgU2h1dHRlckZlc3QuIFJldG91Y2hlZCB3aXRoIFJlYmx1bS4iLAogICAgaW1hZ2VDcmVkaXQ6CiAgICAgICJQaG90b2dyYXBoIGJ5IEpvaG4gR3Vlc3QsIFBob3RvZ3JhcGh5IEZpdCAyIFByaW50LiBNb2RlbDogU3lkbmV5LiBFdmVudDogU2h1dHRlckZlc3QuIiwKICAgIGltYWdlV2lkdGg6IDE3NjEsCiAgICBpbWFnZUhlaWdodDogMjAwMCwKICAgIGltYWdlVW5vcHRpbWl6ZWQ6IHRydWUsCiAgICBjb250ZW50OiBbCiAgICAgICJUaGVyZSdzIGEgcGFydGljdWxhciBraW5kIG9mIGNvbW1lbnQgdGhhdCBzaG93cyB1cCB1bmRlciBhbnkgcmV0b3VjaGVkIHBvcnRyYWl0IG9ubGluZS4iLAogICAgICAiXCJUaGF0J3Mgbm90IHJlYWwgc2tpbi5cIiBcIllvdSBjYW4gdGVsbCBpdCdzIEFJLlwiIFwiV2h5IGRvZXMgc2hlIGxvb2sgbGlrZSBwbGFzdGljLlwiIiwKICAgICAgIlNvbWV0aW1lcyB0aGUgY29tbWVudCBpcyBmYWlyLiBPZnRlbiBpdCBpc24ndC4gQnV0IEkndmUgbm90aWNlZCB0aGUgcmV0b3VjaGVzIHRoYXQgZHJhdyB0aGUgbW9zdCBjcml0aWNpc20gYXJlIGFsbW9zdCBuZXZlciB0aGUgc3VidGxlIG9uZXMuIFRoZXkncmUgdGhlIG9uZXMgd2hlcmUgc29tZWJvZHkgY2xlYXJseSByZWFjaGVkIGZvciBhIHNsaWRlciBhbmQgZGlkbid0IGxldCBnby4iLAogICAgICAiU28gd2hlbiBJIHNhdCBkb3duIHRvIHRlc3QgUmVibHVtIG9uIGEgcmVhbCBwb3J0cmFpdCBvZiBTeWRuZXkgZnJvbSBTaHV0dGVyRmVzdCwgSSB3YXNuJ3QgdHJ5aW5nIHRvIHByb3ZlIHRoZSBzb2Z0d2FyZSBjb3VsZCB0cmFuc2Zvcm0gYSBwaG90b2dyYXBoLiBJIHdhcyB0cnlpbmcgdG8gc2VlIGlmIGl0IGNvdWxkIGRvIHRoZSBvcHBvc2l0ZTogZmluaXNoIHRoZSBza2luIHNvIGNvbXBsZXRlbHkgdGhhdCB0aGVyZSB3YXMgbm90aGluZyBsZWZ0IHRvIGFyZ3VlIGFib3V0LiIsCiAgICAgIHsKICAgICAgICB0eXBlOiAiaW1hZ2UiLAogICAgICAgIHNyYzogImh0dHBzOi8vZy50bGNkbi5jb20vZ2VuLzU4MjM1Nzc3ODM5NzQ5Y2Y4YzQ2MDVlYmIzODEyZWFkLmpwZWciLAogICAgICAgIGFsdDogIk1vZGVsIFN5ZG5leSB3ZWFyaW5nIHRhbGwgdGVhbCBvc3RyaWNoLWZlYXRoZXIgd2luZ3MsIGEgZ29sZCBicm9jYWRlIHRvcCwgbGF5ZXJlZCBnb2xkIGpld2VscnkgYW5kIGJhbmdsZXMsIHNlYXRlZCBhbmQgbG9va2luZyBkaXJlY3RseSBpbnRvIHRoZSBjYW1lcmEiLAogICAgICAgIGNhcHRpb246ICJUaGUgZmluaXNoZWQgZnJhbWUuIFNraW4gcmV0b3VjaGVkIHdpdGggUmVibHVtLiIsCiAgICAgICAgY3JlZGl0OgogICAgICAgICAgIlBob3RvZ3JhcGggYnkgSm9obiBHdWVzdCwgUGhvdG9ncmFwaHkgRml0IDIgUHJpbnQuIE1vZGVsOiBTeWRuZXkuIEV2ZW50OiBTaHV0dGVyRmVzdC4iLAogICAgICAgIHdpZHRoOiAxNzYxLAogICAgICAgIGhlaWdodDogMjAwMCwKICAgICAgICB1bm9wdGltaXplZDogdHJ1ZSwKICAgICAgfSwKICAgICAgIlN5ZG5leSdzIHNldHVwIGdhdmUgbWUgYSBsb3QgdG8gd29yayB3aXRoLiBUYWxsIHRlYWwgb3N0cmljaCBmZWF0aGVycywgd2FybSBzdHVkaW8gbGlnaHQsIGdvbGQgamV3ZWxyeSBzdGFja2VkIGF0IHRoZSB3cmlzdHMgYW5kIHRocm9hdC4gQWxsIG9mIHRoYXQgdGV4dHVyZSBhbmQgY29sb3IgbmVlZGVkIHRvIHN0YXkgZXhhY3RseSBhcyBwaG90b2dyYXBoZWQuIFRoZSBvbmx5IHRoaW5nIEkgd2FudGVkIHRvIHRvdWNoIHdhcyBoZXIgc2tpbi4iLAogICAgICAiUmVibHVtIHNwbGl0cyB0aGF0IGpvYiBpbnRvIHR3byBwYXNzZXMsIGFuZCB0aGF0IHNwbGl0IGlzIHdvcnRoIHVuZGVyc3RhbmRpbmcgaWYgeW91J3JlIGEgcGhvdG9ncmFwaGVyIGNvbnNpZGVyaW5nIGl0LiBPbmUgcGFzcyBzb2Z0ZW5zIHRoZSB0cmFuc2l0aW9ucyDigJQgdGhlIHBsYWNlcyB3aGVyZSBsaWdodCBhbmQgc2hhZG93IG1lZXQgb24gc2tpbiwgdW5kZXIgdGhlIGV5ZXMsIGFyb3VuZCB0aGUgbW91dGgsIGFueXdoZXJlIGEgaGFyZCBlZGdlIG5vcm1hbGx5IHB1bGxzIGF0dGVudGlvbi4gVGhlIG90aGVyIHBhc3MgbG9va3Mgc3BlY2lmaWNhbGx5IGZvciBzbWFsbCBkZWZlY3RzLCBibGVtaXNoZXMgYW5kIGJsb3RjaGVzLCBhbmQgY29ycmVjdHMgdGhvc2Ugd2l0aG91dCB0b3VjaGluZyB0aGUgc3Vycm91bmRpbmcgdGV4dHVyZS4gSXQncyBhIGxvdy1mcmVxdWVuY3kgcGFzcyBhbmQgYSBoaWdoLWZyZXF1ZW5jeSBwYXNzLCBoYW5kbGVkIHNlcGFyYXRlbHkgaW5zdGVhZCBvZiBvbmUgYmx1bnQgZ2xvYmFsIHNtb290aGluZyBzZXR0aW5nLiIsCiAgICAgICJUaGF0IGRpc3RpbmN0aW9uIG1hdHRlcnMuIEEgdG9vbCB0aGF0IG9ubHkgc21vb3RocyBldmVyeXRoaW5nIGF0IG9uY2UgaXMgdGhlIGZhc3Rlc3Qgd2F5IHRvIGxvc2UgcG9yZXMsIGxvc2UgdGV4dHVyZSwgYW5kIGVuZCB1cCB3aXRoIHRoZSBwb3JjZWxhaW4gbG9vayBldmVyeW9uZSdzIGxlYXJuZWQgdG8gc3BvdC4iLAogICAgICAiPiBJIHdhc24ndCB0cnlpbmcgdG8gcHJvdmUgdGhlIHNvZnR3YXJlIGNvdWxkIHRyYW5zZm9ybSB0aGUgcGhvdG9ncmFwaC4gSSB3YXMgdHJ5aW5nIHRvIHNlZSBpZiBpdCBjb3VsZCBmaW5pc2ggdGhlIHNraW4gc28gY29tcGxldGVseSB0aGF0IHRoZXJlIHdhcyBub3RoaW5nIGxlZnQgdG8gYXJndWUgYWJvdXQuIiwKICAgICAgewogICAgICAgIHR5cGU6ICJpbWFnZSIsCiAgICAgICAgc3JjOiAiaHR0cHM6Ly9nLnRsY2RuLmNvbS9nZW4vZDQxNThlODg1ZWViNGJmNmI5NTk4OWY1MmQxMTA4ZDguanBlZyIsCiAgICAgICAgYWx0OiAiVW5yZXRvdWNoZWQgY2FwdHVyZSBvZiB0aGUgc2FtZSBwb3J0cmFpdCBvZiBTeWRuZXksIHN0cmFpZ2h0IGZyb20gdGhlIGNhbWVyYSIsCiAgICAgICAgY2FwdGlvbjogIkJlZm9yZS4gU3RyYWlnaHQgZnJvbSB0aGUgc2hvb3QsIHVucmV0b3VjaGVkLiIsCiAgICAgICAgY3JlZGl0OgogICAgICAgICAgIlBob3RvZ3JhcGggYnkgSm9obiBHdWVzdCwgUGhvdG9ncmFwaHkgRml0IDIgUHJpbnQuIE1vZGVsOiBTeWRuZXkuIEV2ZW50OiBTaHV0dGVyRmVzdC4iLAogICAgICAgIHdpZHRoOiAxNzYxLAogICAgICAgIGhlaWdodDogMjAwMCwKICAgICAgICB1bm9wdGltaXplZDogdHJ1ZSwKICAgICAgfSwKICAgICAgIlB1dCB0aGUgdHdvIGZyYW1lcyBzaWRlIGJ5IHNpZGUgYW5kIEkgZG9uJ3QgZXhwZWN0IG1vc3QgcGVvcGxlIHRvIGltbWVkaWF0ZWx5IHNwb3QgZXZlcnkgY2hhbmdlLiBUaGF0J3Mgbm90IGEgZmFpbHVyZSBvZiB0aGUgc29mdHdhcmUgb3IgYSBmYWlsdXJlIG9mIHRoZSBkZW1vbnN0cmF0aW9uLiBJdCdzIHRoZSBwb2ludC4gSSB3YXNuJ3QgY2hhc2luZyBhIGRyYW1hdGljIGJlZm9yZS9hZnRlci4gSSB3YXMgY2hhc2luZyBhIHBob3RvZ3JhcGggdGhhdCBob2xkcyB1cCB0byBzY3J1dGlueSB3aXRob3V0IGludml0aW5nIGFuIGFyZ3VtZW50IGFib3V0IGhvdyBpdCB3YXMgbWFkZS4iLAogICAgICAiSSBzdGlsbCBtYWRlIHRoZSBkZWNpc2lvbnMuIFdoZXJlIGEgdG9vbCBlYXNlcyByZWRuZXNzLCBJIGRlY2lkZWQgaG93IGZhciB0aGF0IGNvcnJlY3Rpb24gc2hvdWxkIGdvIGJlZm9yZSBpdCBzdG9wcGVkIHJlYWRpbmcgYXMgc2tpbi4gV2hlcmUgYSB0b29sIHJlbW92ZXMgZ2xhcmUsIEkgZGVjaWRlZCB3aGV0aGVyIHRoZSBoaWdobGlnaHQgd2FzIHdvcnRoIGtlZXBpbmcgZm9yIHNoYXBlLiBSZWJsdW0gcmFuIGxvY2FsbHksIG9uIG15IG93biBtYWNoaW5lLCBpbnNpZGUgYSB3b3JrZmxvdyB0aGF0IHN0aWxsIHJ1bnMgdGhyb3VnaCBMaWdodHJvb20gQ2xhc3NpYyB0aGUgc2FtZSB3YXkgaXQgYWx3YXlzIGhhcy4gTm90aGluZyBhYm91dCB0aGUgc2hhcGUgb2YgbXkgcHJvY2VzcyBjaGFuZ2VkLiBXaGF0IGNoYW5nZWQgaXMgaG93IG11Y2ggdGltZSBJIHNwZW50IG9uIHRoZSBwYXJ0cyBvZiByZXRvdWNoaW5nIHRoYXQgYXJlIHJlcGV0aXRpdmUgcmF0aGVyIHRoYW4gY3JlYXRpdmUuIiwKICAgICAgIkknbSBzdGlsbCBsZWFybmluZyB0aGlzIHNvZnR3YXJlLiBJIHdhbnQgdG8gYmUgdXBmcm9udCBhYm91dCB0aGF0LiBJJ20gbm90IHByZXNlbnRpbmcgbXlzZWxmIGFzIGFuIGV4cGVydCBvbiBhIHRvb2wgSSd2ZSB1c2VkIG9uIGEgaGFuZGZ1bCBvZiBpbWFnZXMuIFdoYXQgSSBjYW4gdGVsbCB5b3UgaG9uZXN0bHkgaXMgd2hhdCBJIGxvb2tlZCBmb3IsIHdoYXQgSSBkZWNpZGVkIHRvIGxlYXZlIGFsb25lLCBhbmQgd2hhdCBJJ2Qgd2FudCB0byBzZWUgYmVmb3JlIEkgdHJ1c3RlZCBpdCBvbiBhIGNsaWVudCBnYWxsZXJ5LiIsCiAgICAgICJBbmQgZXZlbnR1YWxseSwgc2FtZSBhcyBldmVyeSBwaG90b2dyYXBoIHRoYXQgY29tZXMgdGhyb3VnaCBoZXJlLCB0aGlzIG9uZSBoYXMgdG8gcGFzcyB0aGUgdGVzdCB0aGF0IGFjdHVhbGx5IG1hdHRlcnMgdG8gbWUuIiwKICAgICAgIj4+IFRoZSBQYXBlci4iLAogICAgICAiU2NyZWVucyBmb3JnaXZlIGEgbG90LiBUaGV5IGZvcmdpdmUgc2xpZ2h0bHktb2ZmIHNraW4gdG9uZXMsIHNsaWdodGx5LXRvby1zbW9vdGggaGlnaGxpZ2h0cywgY29sb3JzIHRoYXQgc2hpZnQgZGVwZW5kaW5nIG9uIHdobydzIGxvb2tpbmcgYXQgd2hhdCBkaXNwbGF5LiBQYXBlciBkb2Vzbid0IGZvcmdpdmUgYW55dGhpbmcuIElmIHRoZSByZXRvdWNoaW5nIHdhcyB0b28gYWdncmVzc2l2ZSwgYSBwcmludCB3aWxsIHRlbGwgb24gaXQgaW5zdGFudGx5LiBJZiBpdCB3YXMgZG9uZSByaWdodCwgdGhlIHByaW50IGp1c3QgbG9va3MgbGlrZSBTeWRuZXkuIiwKICAgICAgIj4+PiBGaXQgMiBDYXB0dXJlLiBGaXQgMiBDdXJhdGUuIEZpdCAyIFByaW50LiIsCiAgICAgICJN
+import type { BlogPost } from "@/lib/blog-posts";
+
+export const CURRENT_BLOG_POSTS: BlogPost[] = [
+  {
+    slug: "behind-the-print-the-retouch-youre-not-supposed-to-notice",
+    title: "Behind the Print: The Retouch You're Not Supposed to Notice",
+    excerpt:
+      "Testing Reblum on a real ShutterFest portrait of Sydney, and learning that the best skin work is the kind nobody has anything to argue about.",
+    date: "2026-09-29",
+    seoTitle:
+      "Behind the Print: The Retouch You're Not Supposed to Notice | Behind The Print",
+    metaDescription:
+      "John Guest tests Reblum's skin retouching on a real ShutterFest portrait of Sydney, and explains why avoiding an argument about the edit was the actual goal.",
+    tags: [
+      "Behind The Print",
+      "Portrait Photography",
+      "Retouching",
+      "ShutterFest",
+      "Reblum",
+    ],
+    image: "https://g.tlcdn.com/gen/58235777839749cf8c4605ebb3812ead.jpeg",
+    imageAlt:
+      "Model Sydney wearing tall teal ostrich-feather wings, a gold brocade top, layered gold jewelry and bangles, seated and looking directly into the camera",
+    imageCaption:
+      "Sydney, photographed at ShutterFest. Retouched with Reblum.",
+    imageCredit:
+      "Photograph by John Guest, Photography Fit 2 Print. Model: Sydney. Event: ShutterFest.",
+    imageWidth: 1761,
+    imageHeight: 2000,
+    imageUnoptimized: true,
+    content: [
+      "There's a particular kind of comment that shows up under any retouched portrait online.",
+      "\"That's not real skin.\" \"You can tell it's AI.\" \"Why does she look like plastic.\"",
+      "Sometimes the comment is fair. Often it isn't. But I've noticed the retouches that draw the most criticism are almost never the subtle ones. They're the ones where somebody clearly reached for a slider and didn't let go.",
+      "So when I sat down to test Reblum on a real portrait of Sydney from ShutterFest, I wasn't trying to prove the software could transform a photograph. I was trying to see if it could do the opposite: finish the skin so completely that there was nothing left to argue about.",
+      {
+        type: "image",
+        src: "https://g.tlcdn.com/gen/58235777839749cf8c4605ebb3812ead.jpeg",
+        alt: "Model Sydney wearing tall teal ostrich-feather wings, a gold brocade top, layered gold jewelry and bangles, seated and looking directly into the camera",
+        caption: "The finished frame. Skin retouched with Reblum.",
+        credit:
+          "Photograph by John Guest, Photography Fit 2 Print. Model: Sydney. Event: ShutterFest.",
+        width: 1761,
+        height: 2000,
+        unoptimized: true,
+      },
+      "Sydney's setup gave me a lot to work with. Tall teal ostrich feathers, warm studio light, gold jewelry stacked at the wrists and throat. All of that texture and color needed to stay exactly as photographed. The only thing I wanted to touch was her skin.",
+      "Reblum splits that job into two passes, and that split is worth understanding if you're a photographer considering it. One pass softens the transitions — the places where light and shadow meet on skin, under the eyes, around the mouth, anywhere a hard edge normally pulls attention. The other pass looks specifically for small defects, blemishes and blotches, and corrects those without touching the surrounding texture. It's a low-frequency pass and a high-frequency pass, handled separately instead of one blunt global smoothing setting.",
+      "That distinction matters. A tool that only smooths everything at once is the fastest way to lose pores, lose texture, and end up with the porcelain look everyone's learned to spot.",
+      "> I wasn't trying to prove the software could transform the photograph. I was trying to see if it could finish the skin so completely that there was nothing left to argue about.",
+      {
+        type: "image",
+        src: "https://g.tlcdn.com/gen/d4158e885eeb4bf6b95989f52d1108d8.jpeg",
+        alt: "Unretouched capture of the same portrait of Sydney, straight from the camera",
+        caption: "Before. Straight from the shoot, unretouched.",
+        credit:
+          "Photograph by John Guest, Photography Fit 2 Print. Model: Sydney. Event: ShutterFest.",
+        width: 1761,
+        height: 2000,
+        unoptimized: true,
+      },
+      "Put the two frames side by side and I don't expect most people to immediately spot every change. That's not a failure of the software or a failure of the demonstration. It's the point. I wasn't chasing a dramatic before/after. I was chasing a photograph that holds up to scrutiny without inviting an argument about how it was made.",
+      "I still made the decisions. Where a tool eases redness, I decided how far that correction should go before it stopped reading as skin. Where a tool removes glare, I decided whether the highlight was worth keeping for shape. Reblum ran locally, on my own machine, inside a workflow that still runs through Lightroom Classic the same way it always has. Nothing about the shape of my process changed. What changed is how much time I spent on the parts of retouching that are repetitive rather than creative.",
+      "I'm still learning this software. I want to be upfront about that. I'm not presenting myself as an expert on a tool I've used on a handful of images. What I can tell you honestly is what I looked for, what I decided to leave alone, and what I'd want to see before I trusted it on a client gallery.",
+      "And eventually, same as every photograph that comes through here, this one has to pass the test that actually matters to me.",
+      ">> The Paper.",
+      "Screens forgive a lot. They forgive slightly-off skin tones, slightly-too-smooth highlights, colors that shift depending on who's looking at what display. Paper doesn't forgive anything. If the retouching was too aggressive, a print will tell on it instantly. If it was done right, the print just looks like Sydney.",
+      ">>> Fit 2 Capture. Fit 2 Curate. Fit 2 Print.",
+      "M
