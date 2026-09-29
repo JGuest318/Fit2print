@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/site";
 import { BLOG_POSTS } from "@/lib/blog-posts";
 import { EXTRA_BLOG_POSTS } from "@/lib/blog-posts-extra";
-import { CURRENT_BLOG_POSTS } from "@/lib/blog-posts-current";
+import { MERGED_BLOG_POSTS as CURRENT_BLOG_POSTS } from "@/lib/blog-posts-current-merged";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = `https://${SITE.domain}`;

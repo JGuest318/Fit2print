@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BLOG_POSTS } from "@/lib/blog-posts";
 import { EXTRA_BLOG_POSTS } from "@/lib/blog-posts-extra";
-import { CURRENT_BLOG_POSTS } from "@/lib/blog-posts-current";
+import { MERGED_BLOG_POSTS as CURRENT_BLOG_POSTS } from "@/lib/blog-posts-current-merged";
 
 const HINKS_POST = {
   slug: "hinks-smokehouse-from-folding-table-to-food-truck",

@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { BLOG_POSTS, type BlogContent } from "@/lib/blog-posts";
 import { EXTRA_BLOG_POSTS } from "@/lib/blog-posts-extra";
-import { CURRENT_BLOG_POSTS } from "@/lib/blog-posts-current";
+import { MERGED_BLOG_POSTS as CURRENT_BLOG_POSTS } from "@/lib/blog-posts-current-merged";
 import { FinalCta } from "@/components/final-cta";
 
 const ALL_BLOG_POSTS = [...CURRENT_BLOG_POSTS, ...EXTRA_BLOG_POSTS, ...BLOG_POSTS];
