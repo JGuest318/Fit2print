@@ -96,6 +96,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <head>
+        <meta name="p:domain_verify" content="26387a8e1ae5913798861198a28a8c00"/>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
