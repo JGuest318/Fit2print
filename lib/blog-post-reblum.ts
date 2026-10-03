@@ -57,7 +57,7 @@ export const REBLUM_POST: BlogPost = {
     "Screens forgive a lot. They forgive slightly-off skin tones, slightly-too-smooth highlights, colors that shift depending on who's looking at what display. Paper doesn't forgive anything. If the retouching was too aggressive, a print will tell on it instantly. If it was done right, the print just looks like Sydney.",
     ">>> Fit 2 Capture. Fit 2 Curate. Fit 2 Print.",
     "Model: Sydney / Event: ShutterFest / Photography: Photography Fit 2 Print / John Guest",
-    "If you're a photographer curious to try Reblum yourself, it offers a 7-day free trial with no card required, and a discount if you decide to continue through my link.",
+    "If you're a photographer curious to try Reblum yourself, it offers a 7-day free trial with no card required, and you can see the current offer directly through my link. Limited-time offers must be claimed before their displayed deadline; starting a trial does not extend them.",
     "Disclosure: I'm a Reblum affiliate. If you decide to try Reblum through my affiliate link or code ([reblum.app/p/FIT2PRT](https://reblum.app/p/FIT2PRT)), I may receive a benefit from the referral. These are my photographs and my opinions about how Reblum fits into my own retouching workflow.",
   ],
 };
