@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { BLOG_POSTS, type BlogContent } from "@/lib/blog-posts";
 import { EXTRA_BLOG_POSTS } from "@/lib/blog-posts-extra";
 import { MERGED_BLOG_POSTS as CURRENT_BLOG_POSTS } from "@/lib/blog-posts-current-merged";
+import affiliateCampaigns from "@/lib/affiliate-campaigns.json";
 import { FinalCta } from "@/components/final-cta";
 
 const ALL_BLOG_POSTS = [...CURRENT_BLOG_POSTS, ...EXTRA_BLOG_POSTS, ...BLOG_POSTS];
@@ -178,6 +179,9 @@ export default async function BlogPost({
   const { slug } = await params;
   const post = ALL_BLOG_POSTS.find((p) => p.slug === slug);
   if (!post) notFound();
+  const reblumCampaign = post.slug === "behind-the-print-the-retouch-youre-not-supposed-to-notice"
+    ? affiliateCampaigns.campaigns.find((campaign) => campaign.id === "REBLUM-001")
+    : undefined;
 
   return (
     <main className="px-6 pb-24 pt-36">
@@ -192,6 +196,18 @@ export default async function BlogPost({
 
         <p className="section-label mb-4">{formatDate(post.date)}</p>
         <h1 className="hero-heading mb-10 text-4xl text-white md:text-5xl">{post.title}</h1>
+
+        {reblumCampaign && (
+          <section className="my-10 rounded-lg border border-white/15 p-6" aria-label="Try Reblum">
+            <h2 className="text-2xl font-semibold text-white">Get Reblum</h2>
+            <p className="mt-3 text-white/70">Try it free for 7 days, no credit card required. See the current offer directly at Reblum.</p>
+            <a href={reblumCampaign.partner.affiliateLink} rel="sponsored"
+              className="mt-5 inline-flex rounded-md bg-[var(--accent)] px-6 py-3 font-semibold text-black">
+              Get Reblum
+            </a>
+            <p className="mt-4 text-sm text-white/60">{reblumCampaign.partner.disclosureText}</p>
+          </section>
+        )}
 
         {post.image && (
           <figure className="mb-10">
@@ -246,7 +262,7 @@ export default async function BlogPost({
         )}
       </div>
 
-      <FinalCta />
+      {!reblumCampaign && <FinalCta />}
     </main>
   );
 }
