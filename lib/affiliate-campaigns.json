@@ -11,9 +11,15 @@
         "disclosureText": "I'm a Reblum affiliate. If you decide to try Reblum through my affiliate link or code (reblum.app/p/FIT2PRT), I may receive a benefit from the referral. These are my photographs and my opinions about how Reblum fits into my own retouching workflow."
       },
       "offer": {
-        "summary": "7-day free trial, no card required, plus a discount via the affiliate link if the trial converts.",
+        "summary": "7-day free trial, no card required. Current promotional pricing is shown at Reblum; trial completion does not extend a limited-time offer.",
         "sourceOfTruth": "Reblum Creator Brief v1.5, section 10",
-        "notes": "No specific discount percentage is displayed in ad creative or disclosure per the partner's own 'do not show pricing details' guidance (region-variable pricing). Do not reintroduce a hard percentage without reconfirming with the partner."
+        "notes": "Show current terms at Reblum. Keep evergreen creative free of hard-coded prices. The limited-time lifetime promotion ends October 4, 2026; do not imply it remains available after a seven-day trial.",
+        "promotion": {
+          "discount": "40% off lifetime license",
+          "endsOn": "2026-10-04",
+          "verifiedOn": "2026-10-03",
+          "source": "https://reblum.app/pricing?promo=FIT2PRT"
+        }
       },
       "story": {
         "angle": "Retouching assistant, not aesthetic authority",
@@ -27,7 +33,7 @@
       "channel": {
         "platform": "Pinterest",
         "format": "Static Pin, 1000x1500 (2:3 vertical)",
-        "landingDestination": "https://phfit2print.com/blog/behind-the-print-the-retouch-youre-not-supposed-to-notice"
+        "landingDestination": "https://reblum.app/p/FIT2PRT"
       },
       "creatives": [
         {
@@ -36,9 +42,10 @@
           "kicker": "Limited-Time Offer",
           "headline": "Professional Retouching Without Surrendering Your Eye",
           "subhead": "I tried Reblum on my own portrait work. Here's what stayed mine.",
-          "cta": "See My Workflow",
+          "cta": "Get Reblum",
           "assetUrl": "https://g.tlcdn.com/gen/cf75e4c335c349e089e45ad74cced2dee.jpeg",
-          "destinationUrl": "https://phfit2print.com/blog/behind-the-print-the-retouch-youre-not-supposed-to-notice?utm_source=pinterest&utm_medium=paid_social&utm_campaign=reblum_001&utm_content=Reblum-PIN-001A"
+          "destinationUrl": "https://reblum.app/p/FIT2PRT",
+          "assetStatus": "Existing image contains the previous workflow CTA; refresh before publishing the direct-destination creative."
         },
         {
           "creativeId": "Reblum-PIN-001B",
@@ -46,9 +53,10 @@
           "kicker": "My Philosophy",
           "headline": "I Don't Let Software Decide What Beautiful Looks Like",
           "subhead": "Reblum handles part of the work. I make the photograph.",
-          "cta": "See How I Use It",
+          "cta": "Get Reblum",
           "assetUrl": "https://g.tlcdn.com/gen/2cb4713edf814dc9b9e7e497203fc85e.jpeg",
-          "destinationUrl": "https://phfit2print.com/blog/behind-the-print-the-retouch-youre-not-supposed-to-notice?utm_source=pinterest&utm_medium=paid_social&utm_campaign=reblum_001&utm_content=Reblum-PIN-001B"
+          "destinationUrl": "https://reblum.app/p/FIT2PRT",
+          "assetStatus": "Existing image contains the previous workflow CTA; refresh before publishing the direct-destination creative."
         },
         {
           "creativeId": "Reblum-PIN-001C",
@@ -56,18 +64,28 @@
           "kicker": "From Capture to Print",
           "headline": "Where Reblum Fits Inside My Real Portrait Workflow",
           "subhead": "An honest look at one retouch, start to finish.",
-          "cta": "See the Process",
+          "cta": "Get Reblum",
           "assetUrl": "https://g.tlcdn.com/gen/5e7d2a57f9cb45f2bad621d07d5a1902.jpeg",
-          "destinationUrl": "https://phfit2print.com/blog/behind-the-print-the-retouch-youre-not-supposed-to-notice?utm_source=pinterest&utm_medium=paid_social&utm_campaign=reblum_001&utm_content=Reblum-PIN-001C"
+          "destinationUrl": "https://reblum.app/p/FIT2PRT",
+          "assetStatus": "Existing image contains the previous workflow CTA; refresh before publishing the direct-destination creative."
         }
       ],
       "result": {
         "metricsToTrack": [
-          "impressions", "pinSaves", "outboundClicks", "ctr", "cpc", "spend",
-          "pf2pVisits", "affiliateClicks", "confirmedConversions"
+          "impressions",
+          "pinSaves",
+          "outboundClicks",
+          "ctr",
+          "cpc",
+          "spend",
+          "pf2pVisits",
+          "affiliateClicks",
+          "confirmedConversions"
         ],
-        "funnel": "Impression -> Pin engagement (saves) -> PF2P visit -> affiliate click -> conversion",
-        "explicitlyNotOptimizingFor": ["likes"],
+        "funnel": "Impression -> Pin engagement -> direct Reblum referral visit -> conversion",
+        "explicitlyNotOptimizingFor": [
+          "likes"
+        ],
         "status": "not_yet_launched",
         "spendGuidance": "Small controlled test only. No meaningful Pinterest spend until instrumentation is validated."
       },
@@ -82,12 +100,39 @@
   ],
   "template": {
     "id": "PARTNER-CODE-001",
-    "partner": { "name": "", "product": "", "affiliateLink": "", "affiliateLinkNote": "", "disclosureText": "" },
-    "offer": { "summary": "", "sourceOfTruth": "", "notes": "" },
-    "story": { "angle": "", "summary": "", "constraints": [] },
-    "channel": { "platform": "", "format": "", "landingDestination": "" },
+    "partner": {
+      "name": "",
+      "product": "",
+      "affiliateLink": "",
+      "affiliateLinkNote": "",
+      "disclosureText": ""
+    },
+    "offer": {
+      "summary": "",
+      "sourceOfTruth": "",
+      "notes": ""
+    },
+    "story": {
+      "angle": "",
+      "summary": "",
+      "constraints": []
+    },
+    "channel": {
+      "platform": "",
+      "format": "",
+      "landingDestination": ""
+    },
     "creatives": [],
-    "result": { "metricsToTrack": [], "funnel": "", "explicitlyNotOptimizingFor": [], "status": "", "spendGuidance": "" },
-    "learning": { "openQuestions": [], "notes": [] }
+    "result": {
+      "metricsToTrack": [],
+      "funnel": "",
+      "explicitlyNotOptimizingFor": [],
+      "status": "",
+      "spendGuidance": ""
+    },
+    "learning": {
+      "openQuestions": [],
+      "notes": []
+    }
   }
 }
