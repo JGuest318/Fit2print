@@ -201,6 +201,7 @@ export default async function BlogPost({
           <section className="my-10 rounded-lg border border-white/15 p-6" aria-label="Try Reblum">
             <h2 className="text-2xl font-semibold text-white">Get Reblum</h2>
             <p className="mt-3 text-white/70">Try it free for 7 days, no credit card required. See the current offer directly at Reblum.</p>
+            <p className="mt-3 text-white/70">Current offer: {reblumCampaign.offer.promotion.discount}. Confirm current terms at Reblum.</p>
             <a href={reblumCampaign.partner.affiliateLink} rel="sponsored"
               className="mt-5 inline-flex rounded-md bg-[var(--accent)] px-6 py-3 font-semibold text-black">
               Get Reblum

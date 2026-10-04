@@ -13,12 +13,12 @@
       "offer": {
         "summary": "7-day free trial, no card required. Current promotional pricing is shown at Reblum; trial completion does not extend a limited-time offer.",
         "sourceOfTruth": "Reblum Creator Brief v1.5, section 10",
-        "notes": "Show current terms at Reblum. Keep evergreen creative free of hard-coded prices. The limited-time lifetime promotion ends October 4, 2026; do not imply it remains available after a seven-day trial.",
+        "notes": "Show current terms at Reblum. Keep evergreen creative free of hard-coded prices. The 40% lifetime promotion ending October 4, 2026 has expired and is replaced by the current 20% offer. No end date has been supplied for the replacement offer; confirm current terms at Reblum.",
         "promotion": {
-          "discount": "40% off lifetime license",
-          "endsOn": "2026-10-04",
-          "verifiedOn": "2026-10-03",
-          "source": "https://reblum.app/pricing?promo=FIT2PRT"
+          "discount": "20% off",
+          "endsOn": null,
+          "confirmedBy": "Site owner instruction, October 4, 2026",
+          "source": "https://reblum.app/p/FIT2PRT"
         }
       },
       "story": {
