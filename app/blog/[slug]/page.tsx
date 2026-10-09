@@ -32,6 +32,12 @@ export async function generateMetadata({
     description,
     alternates: { canonical: `/blog/${post.slug}` },
     keywords: post.tags,
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: post.image ? [{ url: post.image, alt: post.imageAlt ?? post.title }] : undefined,
+    },
     openGraph: {
       title,
       description,
