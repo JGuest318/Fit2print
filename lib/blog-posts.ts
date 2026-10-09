@@ -715,9 +715,10 @@ export const BLOG_POSTS: BlogPost[] = [
       "We create every photograph as though it could become someone's most treasured possession.",
       "That conviction is the heartbeat of Photography Fit 2 Print.",
       "It is more than a business name. It is a promise. A promise that every photograph leaving the studio has been crafted with the respect future memories deserve. Images intended not merely to exist on a screen, but to live on walls, rest in albums, pass through careful hands, and be rediscovered by people we will never meet.",
-      "Because heirlooms are not born the moment the shutter closes.",
-      "They earn that distinction one generation at a time—through remembrance, through preservation, and through the enduring affection of those who refuse to let the story disappear.",
-    ],{
+      "Because heirlooms are not born the moment the shutter closes.","They earn that distinction one generation at a time—through remembrance, through preservation, and through purpose."
+    ]
+  },
+  {
     slug: "the-new-girl-has-homework",
     title: "Behind the Print: The New Girl Has Homework — Gemi introduction",
     excerpt: "Introducing Gemi to the Photography Fit 2 Print operational workflow.",
@@ -732,6 +733,5 @@ export const BLOG_POSTS: BlogPost[] = [
         height: 1024
       }
     ]
-  },
-  },
+  }
 ];
