@@ -717,6 +717,6 @@ export const BLOG_POSTS: BlogPost[] = [
       "It is more than a business name. It is a promise. A promise that every photograph leaving the studio has been crafted with the respect future memories deserve. Images intended not merely to exist on a screen, but to live on walls, rest in albums, pass through careful hands, and be rediscovered by people we will never meet.",
       "Because heirlooms are not born the moment the shutter closes.",
       "They earn that distinction one generation at a time—through remembrance, through preservation, and through the enduring affection of those who refuse to let the story disappear.",
-    ],
+    ,
   },
 ];
