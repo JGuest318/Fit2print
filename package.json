@@ -6,10 +6,11 @@
     "booking:migrate": "node scripts/booking-migrate.cjs",
     "booking:retry": "node scripts/booking-retry.cjs",
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "npm run validate:stories && next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --test tests/*.test.cjs"
+    "test": "node --test tests/*.test.cjs",
+    "validate:stories": "node scripts/validate-stories.cjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "1.1.0",
