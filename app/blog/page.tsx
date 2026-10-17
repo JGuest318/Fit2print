@@ -1,23 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BLOG_POSTS } from "@/lib/blog-posts";
-import { EXTRA_BLOG_POSTS } from "@/lib/blog-posts-extra";
-import { MERGED_BLOG_POSTS as CURRENT_BLOG_POSTS } from "@/lib/blog-posts-current-merged";
+import { getStories } from "@/lib/stories";
 
-const HINKS_POST = {
-  slug: "hinks-smokehouse-from-folding-table-to-food-truck",
-  title: "Hink’s Smokehouse: From Folding Table to Food Truck",
-  excerpt:
-    "A familiar Farmers’ Market neighbor grows from bottles on a folding table to a full food truck — a small story about consistency, hard work, and recognizing growth around us.",
-  date: "2026-09-08",
-};
-
-const ALL_BLOG_POSTS = [
-  ...CURRENT_BLOG_POSTS,
-  HINKS_POST,
-  ...EXTRA_BLOG_POSTS,
-  ...BLOG_POSTS,
-].sort((a, b) => b.date.localeCompare(a.date));
+const ALL_BLOG_POSTS = getStories().map(entry => entry.post)
+  .sort((a, b) => b.date.localeCompare(a.date));
 
 export const metadata: Metadata = {
   title: "Behind The Print | Fit 2 Print Blog",

@@ -1,6 +1,7 @@
 import type { BlogPost } from "@/lib/blog-posts";
 
 export const REBLUM_POST: BlogPost = {
+  affiliate: { campaignId: "REBLUM-001", showCta: true },
   slug: "behind-the-print-the-retouch-youre-not-supposed-to-notice",
   title: "Behind the Print: The Retouch You're Not Supposed to Notice",
   excerpt:

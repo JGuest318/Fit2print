@@ -24,6 +24,7 @@ export interface BlogVideo {
 export type BlogContent = string | BlogImage | BlogVideo;
 
 export interface BlogPost {
+  affiliate?: { campaignId: string; showCta: boolean };
   slug: string;
   title: string;
   excerpt: string;

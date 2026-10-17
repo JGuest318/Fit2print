@@ -3,13 +3,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { BLOG_POSTS, type BlogContent } from "@/lib/blog-posts";
-import { EXTRA_BLOG_POSTS } from "@/lib/blog-posts-extra";
-import { MERGED_BLOG_POSTS as CURRENT_BLOG_POSTS } from "@/lib/blog-posts-current-merged";
+import type { BlogContent } from "@/lib/blog-posts";
+import { getStoryPosts } from "@/lib/stories";
 import affiliateCampaigns from "@/lib/affiliate-campaigns.json";
 import { FinalCta } from "@/components/final-cta";
 
-const ALL_BLOG_POSTS = [...CURRENT_BLOG_POSTS, ...EXTRA_BLOG_POSTS, ...BLOG_POSTS];
+const ALL_BLOG_POSTS = getStoryPosts();
 
 export function generateStaticParams() {
   return ALL_BLOG_POSTS.map((post) => ({ slug: post.slug }));
@@ -185,8 +184,8 @@ export default async function BlogPost({
   const { slug } = await params;
   const post = ALL_BLOG_POSTS.find((p) => p.slug === slug);
   if (!post) notFound();
-  const reblumCampaign = post.slug === "behind-the-print-the-retouch-youre-not-supposed-to-notice"
-    ? affiliateCampaigns.campaigns.find((campaign) => campaign.id === "REBLUM-001")
+  const reblumCampaign = post.affiliate?.showCta
+    ? affiliateCampaigns.campaigns.find((campaign) => campaign.id === post.affiliate?.campaignId)
     : undefined;
 
   return (
