@@ -1,0 +1,42 @@
+{
+  "source": "Owner supplied local Lightroom exports, October 22, 2026",
+  "excluded": "7098",
+  "assets": [
+    {
+      "file": "PHFIT2PRINT-7087-Edit.jpg",
+      "sha256": "9da24bca43b3d88871c89cb5d4b9062e9c9363381ec5a3e0f97f2cf832395de1",
+      "bytes": 2376791,
+      "dimensions": [
+        1780,
+        2560
+      ]
+    },
+    {
+      "file": "PHFIT2PRINT-7080.jpg",
+      "sha256": "7f63eefac9ea26a24fa1ef8333f8410c7804e9931f7a1b1b08ee854d527a239d",
+      "bytes": 496181,
+      "dimensions": [
+        867,
+        1106
+      ]
+    },
+    {
+      "file": "PHFIT2PRINT-7090.jpg",
+      "sha256": "a880bf0703abefae9f33f14374ed508f422921c21e87d96886b0b0c7fa7fc13b",
+      "bytes": 1560299,
+      "dimensions": [
+        2131,
+        1422
+      ]
+    },
+    {
+      "file": "PHFIT2PRINT-7094.jpg",
+      "sha256": "640051526efd8b24183bac7e80c4dd9bdde1787ccea4e56b8f3c9e18732f27ca",
+      "bytes": 1405942,
+      "dimensions": [
+        1469,
+        1170
+      ]
+    }
+  ]
+}

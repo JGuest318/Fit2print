@@ -11,13 +11,13 @@ test('Cody payload preserves every original field, paragraph and media reference
   assert.equal(createHash('sha256').update(JSON.stringify(story)).digest('hex'), 'e7d17d67058cb8358feb5c4b24b809e75d2cf99f060dd3ef53995dafab669d49');
 });
 test('collection preserves Hinks static route, listing, sitemap order and story count', () => {
-  assert.equal(getStories().length, 21);
-  assert.equal(getStoryPosts().length, 20);
+  assert.equal(getStories().length, 22);
+  assert.equal(getStoryPosts().length, 21);
   assert.equal(getStories()[0].kind, 'static');
   assert.equal(getStories()[0].post.slug, 'hinks-smokehouse-from-folding-table-to-food-truck');
   assert.equal(getStoryPosts().some(p => p.slug.startsWith('hinks-')), false);
   const sitemap = load('app/sitemap.ts').default();
-  assert.equal(sitemap.length, 28);
+  assert.equal(sitemap.length, 29);
   assert.equal(sitemap[7].url, 'https://phfit2print.com/blog/hinks-smokehouse-from-folding-table-to-food-truck');
   assert.equal(validateStories(getStories(), campaigns).length, 0);
 });
