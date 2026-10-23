@@ -56,6 +56,71 @@ export interface BlogPost {
  */
 export const BLOG_POSTS: BlogPost[] = [
 {
+  "slug": "a-family-of-randy-mosses",
+  "title": "A Family of Randy Mosses",
+  "date": "2026-10-22",
+  "excerpt": "Looking at Randy and then at those carvings, I saw what looked like an entire family of Randy Mosses.",
+  "seoTitle": "A Family of Randy Mosses | Behind the Print",
+  "metaDescription": "A farmers market encounter with Randy Moss, his woodworking, and the joy of making something with intention.",
+  "image": "/blog/a-family-of-randy-mosses/PHFIT2PRINT-7087-Edit.jpg",
+  "imageAlt": "Randy Moss smiling as he carves wood at his farmers market work stand.",
+  "imageWidth": 1780,
+  "imageHeight": 2560,
+  "imageUnoptimized": true,
+  "imageCredit": "Photography Fit 2 Print",
+  "content": [
+    "*Photography Fit 2 Print | The People Behind the Craft*",
+    "## Part One — The Encounter",
+    "I was having a great shooting day at the farmers market. One of those days when everything seemed to catch my eye, and I was enjoying every minute behind the camera.",
+    "Then I came across Randy Moss and his woodworking display.",
+    {
+      "type": "image",
+      "src": "/blog/a-family-of-randy-mosses/PHFIT2PRINT-7090.jpg",
+      "alt": "Wooden games, cutting boards, and carved figures on Randy Moss’s display table.",
+      "width": 2131,
+      "height": 1422,
+      "credit": "Photography Fit 2 Print",
+      "unoptimized": true
+    },
+    "There were beautiful wooden games, cutting boards, and an assortment of hand-carved figures with long beards and faces full of personality. Some looked serious, others mischievous. One even had horns and his tongue hanging out.",
+    "What caught my attention was the resemblance. Looking at Randy and then at those carvings, I saw what looked like an entire family of Randy Mosses.",
+    "I loved that.",
+    {
+      "type": "image",
+      "src": "/blog/a-family-of-randy-mosses/PHFIT2PRINT-7094.jpg",
+      "alt": "Six hand-carved bearded wooden figures displayed at Randy Moss’s market stall.",
+      "width": 1469,
+      "height": 1170,
+      "credit": "Photography Fit 2 Print",
+      "unoptimized": true
+    },
+    "But the real photograph was waiting beyond the display.",
+    "There stood Randy, working on another piece of wood, his hands busy and his face alive with expression. I watched a craftsman engaged in something he clearly enjoyed.",
+    "And I recognized that feeling.",
+    {
+      "type": "image",
+      "src": "/blog/a-family-of-randy-mosses/PHFIT2PRINT-7080.jpg",
+      "alt": "Black-and-white photograph of Randy Moss carving wood held in a vertical work stand.",
+      "width": 867,
+      "height": 1106,
+      "credit": "Photography Fit 2 Print",
+      "unoptimized": true
+    },
+    "## Part Two — The Reflection",
+    "I've had time to live with these photographs now. That's something I value about photography. The experience doesn't necessarily end when you put the camera away.",
+    "Sometimes the meaning becomes clearer afterward.",
+    "Looking at Randy's face, what stays with me is the joy. There's something wonderful about seeing a person absorbed in making something with his own hands.",
+    "I was feeling pretty good myself that day. The light, the people, the conversations, the opportunity to photograph interesting subjects. Everything seemed to be working.",
+    "Randy's enthusiasm added to mine.",
+    "His business card describes his woodworking as heirloom quality. That caught my attention because I believe photographs deserve that same consideration. Something made with intention, something worth keeping, something another generation might appreciate.",
+    "I don't know what Randy was thinking as he worked. I can only tell you what I saw and how it made me feel.",
+    "A man enjoying his craft, surrounded by little wooden personalities that reminded me of their maker.",
+    "And a photographer enjoying his.",
+    "Sometimes that's enough of a reason to make a photograph.",
+    "**Fit 2 Capture. Fit 2 Curate. Fit 2 Print.**"
+  ]
+},
+{
   "slug": "the-new-girl-has-homework",
   "title": "The New Girl Has Homework",
   "excerpt": "Gemi’s first studio lesson begins with a print and a question about why a photograph matters.",
